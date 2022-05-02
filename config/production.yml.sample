@@ -1,0 +1,8 @@
+---
+logging: true
+show_exceptions: false
+run: false
+url: "https://example.com/"
+rollbar: 'YOUR_KEY'
+airtable_key: 'YOUR_KEY'
+airtable_base: 'YOUR_KEY'
