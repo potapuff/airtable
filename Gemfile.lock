@@ -1,0 +1,66 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    airrecord (1.0.10)
+      faraday (>= 1.0, < 3.0)
+      faraday-net_http_persistent
+      net-http-persistent
+    connection_pool (2.2.5)
+    crass (1.0.6)
+    faraday (2.2.0)
+      faraday-net_http (~> 2.0)
+      ruby2_keywords (>= 0.0.4)
+    faraday-net_http (2.0.2)
+    faraday-net_http_persistent (2.0.1)
+      faraday-net_http
+      net-http-persistent (~> 4.0)
+    multi_json (1.15.0)
+    mustermann (1.1.1)
+      ruby2_keywords (~> 0.0.1)
+    net-http-persistent (4.0.1)
+      connection_pool (~> 2.2)
+    nokogiri (1.13.4-x64-mingw32)
+      racc (~> 1.4)
+    oj (3.13.11)
+    racc (1.6.0)
+    rack (2.2.3)
+    rack-protection (2.2.0)
+      rack
+    rake (13.0.6)
+    rollbar (3.3.0)
+    ruby2_keywords (0.0.5)
+    sanitize (6.0.0)
+      crass (~> 1.0.2)
+      nokogiri (>= 1.12.0)
+    sinatra (2.2.0)
+      mustermann (~> 1.0)
+      rack (~> 2.2)
+      rack-protection (= 2.2.0)
+      tilt (~> 2.0)
+    sinatra-contrib (2.2.0)
+      multi_json
+      mustermann (~> 1.0)
+      rack-protection (= 2.2.0)
+      sinatra (= 2.2.0)
+      tilt (~> 2.0)
+    sinatra-cross_origin (0.3.2)
+    tilt (2.0.10)
+    webrick (1.7.0)
+
+PLATFORMS
+  x64-mingw32
+
+DEPENDENCIES
+  airrecord
+  multi_json
+  oj
+  rake
+  rollbar
+  sanitize
+  sinatra
+  sinatra-contrib
+  sinatra-cross_origin (~> 0.3.1)
+  webrick
+
+BUNDLED WITH
+   2.2.32

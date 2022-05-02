@@ -1,0 +1,42 @@
+# minimal Rails specific artifacts
+db/*.sqlite3
+/db/*.sqlite3-journal
+/log/*
+/tmp/*
+/doc/
+nohup.out
+
+# Here are some files you may want to ignore globally:
+
+# scm revert files
+**.orig
+
+# Mac finder artifacts
+.DS_Store
+
+# Netbeans project directory
+/nbproject/
+
+# RubyMine project files
+.idea
+
+# Textmate project files
+/*.tmproj
+
+# vim artifacts
+**.swp
+
+# Environment files that may contain sensitive data
+.env
+.powenv
+
+# tilde files are usually backup files from a text editor
+*~
+
+test*.rb
+
+doc_generator/build/
+doc_generator/source/index.html.md
+public/docs
+public/qr
+public/storage

@@ -1,0 +1,32 @@
+<div class='jumbotron'>
+  <section class='container'>
+    <h1>Errors</h1>
+  </section>
+</div>
+
+<section class='container'>
+  <div class="row">
+  <table>
+    <tr>
+      <th>Date</th>
+      <th>Album</th>
+      <th>User</th>
+      <th>Status</th>
+    </tr>
+    <% @bind.each do |error| %>
+      <tr>
+        <td><%= error.created_at %></td>
+        <td><%= error.album_id %></td>
+        <td><%= error.user_id %></td>
+        <td><%= error.level %></td>
+      </tr>
+      <tr colspan = '4'>
+        <td>
+          <%= error.message %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  </div>
+</section>
+
