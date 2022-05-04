@@ -10,7 +10,6 @@ class MoocApi < Sinatra::Application
     erb(:greetings, layout: :main)
   end
 
-
   get '/ping' do
     [200, University.last_update || 'never']
   end

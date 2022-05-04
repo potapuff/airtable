@@ -17,8 +17,7 @@
   <div id="result" class="p-3"></div>
 </section>
 
-<script id="basic_search" type="x-tmpl-mustache">
-<div class="row paper">
+<script id="ask" type="x-tmpl-mustache">
   <form action="/add" method="POST">
   <div class="row mt-2">
   <label class="col-sm-2 col-form-label">Назва</label>
@@ -39,17 +38,31 @@
   </div>
   </div>
   </form>
-</div>
 </script>
+
+<script id="noadmin" type="x-tmpl-mustache">
+  <h1>{{text}}</h1>
+  <p>Нажаль не призначено адміністратора</p>
+</script>
+
+<script id="ok" type="x-tmpl-mustache">
+  <h1>{{text}}</h1>
+  <div class="row mt-2">Реєстація для Вашого закладу можлива із потшт  &nbsp;<i>ваша-пошта</i>@<strong>{{domain}}</strong></div>
+  <div class="row mt-2">
+    <div class="col-sm-12 text-center">
+     <a class="btn btn-secondary" href='{{URL}}'>Перейти до сайту</a>
+    </div>
+  </div>
+</script>
+
 
 <script>
 
-    template = document.getElementById('basic_search').innerHTML;
-    Mustache.parse(template);
 
   let data =<%= MultiJson.dump(@unis) %>;
   let select = $.map(data, function (obj) {
-      obj.id = obj.text;
+      obj.id = obj.UA;
+      obj.text = obj.UA;
       return  obj;
   });
 
@@ -66,7 +79,8 @@
 
         // `params.term` should be the term that is used for searching
         // `data.text` is the text that is displayed for the data object
-        if (data.text.indexOf(params.term) > -1 || ( data.EN && data.EN.indexOf(params.term) > -1)) {
+        if (( data.UA && data.UA.indexOf(params.term) > -1) ||
+            ( data.EN && data.EN.indexOf(params.term) > -1)) {
             let modifiedData = $.extend({}, data, true);
             return modifiedData;
         }
@@ -90,11 +104,17 @@
           }
       }).on('select2:select', function (e) {
           let value = e.params.data;
-          console.log(value);
-
-          if (value.URL.indexOf("http") > -1) {
-            return window.location.href = value.URL;
+          let variant;
+          console.log(value)
+          if (value.admin === false) {
+              variant = 'noadmin';
+          } if (value.URL.indexOf("http") === -1) {
+              variant = 'ask'
           }
+          else {
+            variant = 'ok';
+          }
+          let template = document.getElementById(variant).innerHTML;
           document.getElementById('result').innerHTML = Mustache.render(template, value);
       });
   });

@@ -8,11 +8,15 @@ class University
 
   def self.all
     data = []
+    i = 0
     auth.rows.each do |row|
+      next if (i+=1) == 1
       data << {
-        :text => row[3],
+        :domain => row[2],
+        :UA => row[3],
         :EN => row[4],
         :URL => row[5],
+        :admin => !row[6].empty?
       }
     end
     data
