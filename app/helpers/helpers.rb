@@ -29,6 +29,15 @@ module Sinatra
       @extra_head += Array(args) unless args.empty?
       @extra_head
     end
+
+    def f(file)
+      @@__file__cache ||= {}
+      unless @@__file__cache[file]
+        @@__file__cache[file] = File.ctime('public/'+file).to_i.to_s
+      end
+      file+'?v='+@@__file__cache[file]
+    end
+
   end
 
   helpers TextHelpers

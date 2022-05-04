@@ -1,21 +1,50 @@
-<div class='jumbotron'>
-  <section class='container'>
-    <div class="d-flex">
-        <h1 class="p-2">Єднаймося із MOOC</h1>
-        <img src="/img/logo.svg" class="ml-auto  p-2" style="height:48px">
-    </div>
+<div class="edusearch">
+  <div class="edudescr">
+    <h1 class="edudescr_title">
+      У полі нижче оберіть свій вищий навчальний заклад, щоб дізнатися посилання для доступу до безкоштовної програми з
+      більш ніж 6000 курсів від провідних університетів і партнерів Coursera!
+    </h1>
+  </div>
 
-  </section>
+
+  <div class="edufinder">
+    <main>
+
+      <section class='container'>
+        <div class="row" style="--bs-gutter-x: 0;">
+          <select id="select" width="100%">
+            <option value=""></option>
+          </select>
+        </div>
+        <div id="result" class="p-3"></div>
+      </section>
+
+    </main>
+  </div>
+
+
 </div>
 
-<section class='container'>
-  <div class="row">
-   <select id="select" width="100%" value="">
-     <option value=""></option>
-   </select>
-  </div>
-  <div id="result" class="p-3"></div>
-</section>
+<script id="new" type="x-tmpl-mustache">
+    <p>
+      Ви не можете знайти свій заклад?  Тоді заповніть форму нижче.
+    </p>
+    <form action='/add' method="POST">
+       <input type="hidden" name="UA" value="{{text}}">
+       <div class="mb-3">
+         <label for="f-url" class="form-label">
+             Спробуйте знайти <a href="https://registry.edbo.gov.ua" target="blank" style="text-decoration: underline;">тут</a>
+         </label>
+         <input type="url" class="form-control" id="f-url"  name="url" placeholder="https://registry.edbo.gov.ua/university/ххххх/" required>
+       </div>
+       <div class="mb-3">
+         <label for="f-email" class="form-label">E-mail</label>
+         <input type="email" class="form-control" id="f-email" name="email">
+       </div>
+       <button type="submit" class="btn btn-primary">Надіслати запит</button>
+    </form>
+</script>
+
 
 <script id="ask" type="x-tmpl-mustache">
   <form action="/add" method="POST">
@@ -38,6 +67,7 @@
   </div>
   </div>
   </form>
+
 </script>
 
 <script id="noadmin" type="x-tmpl-mustache">
@@ -53,69 +83,60 @@
      <a class="btn btn-secondary" href='{{URL}}'>Перейти до сайту</a>
     </div>
   </div>
+
 </script>
 
 
 <script>
 
 
-  let data =<%= MultiJson.dump(@unis) %>;
-  let select = $.map(data, function (obj) {
-      obj.id = obj.UA;
-      obj.text = obj.UA;
-      return  obj;
-  });
+    let data =<%= MultiJson.dump(@unis) %>;
+    let select = $.map(data, function (obj) {
+        obj.id = obj.UA;
+        obj.text = obj.UA;
+        return obj;
+    });
 
     function matchCustom(params, data) {
-        // If there are no search terms, return all of the data
         if ($.trim(params.term) === '') {
             return data;
         }
 
-        // Do not display the item if there is no 'text' property
         if (typeof data.text === 'undefined') {
             return null;
         }
 
-        // `params.term` should be the term that is used for searching
-        // `data.text` is the text that is displayed for the data object
-        if (( data.UA && data.UA.indexOf(params.term) > -1) ||
-            ( data.EN && data.EN.indexOf(params.term) > -1)) {
+        if ((data.UA && data.UA.indexOf(params.term) > -1) ||
+            (data.EN && data.EN.indexOf(params.term) > -1)) {
             let modifiedData = $.extend({}, data, true);
             return modifiedData;
         }
 
-        // Return `null` if the term should not be displayed
         return null;
     }
 
-  $(document).ready(function() {
-      $('#select').select2({
-          data: select,
-          placeholder: 'Виберіть ВНЗ',
-          allowClear: true,
-          matcher: matchCustom,
-          createSearchChoice:function(term, data) {
-              if ( $(data).filter( function() {
-                  return this.text.localeCompare(term)===0;
-              }).length===0) {
-                  return {id:term, text:term};
-              }
-          }
-      }).on('select2:select', function (e) {
-          let value = e.params.data;
-          let variant;
-          console.log(value)
-          if (value.admin === false) {
-              variant = 'noadmin';
-          } if (value.URL.indexOf("http") === -1) {
-              variant = 'ask'
-          }
-          else {
-            variant = 'ok';
-          }
-          let template = document.getElementById(variant).innerHTML;
-          document.getElementById('result').innerHTML = Mustache.render(template, value);
-      });
-  });
+    $(document).ready(function () {
+        $('#select').select2({
+            data: select,
+            placeholder: 'Виберіть ВНЗ',
+            allowClear: true,
+            matcher: matchCustom,
+            tags: true
+        }).on('select2:select', function (e) {
+            let value = e.params.data;
+            let variant;
+            console.log(value)
+            if (value.UA == undefined && value.EN == undefined) {
+                variant = 'new';
+            } else if (value.admin === false) {
+                variant = 'noadmin';
+            } else if (value.URL.indexOf("http") === -1) {
+                variant = 'ask'
+            } else {
+                variant = 'ok';
+            }
+            let template = document.getElementById(variant).innerHTML;
+            document.getElementById('result').innerHTML = Mustache.render(template, value);
+        });
+    });
 </script>

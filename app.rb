@@ -49,6 +49,10 @@ class MoocApi < Sinatra::Application
     200
   end
 
+  not_found do
+    status 404
+    erb("404", layout: :main)
+  end
 
   error do
     status 500
@@ -56,7 +60,7 @@ class MoocApi < Sinatra::Application
     if settings.show_exceptions
       "Application error\n#{e}\n#{e.backtrace.join("\n")}".gsub(/\n/, '<br />')
     else
-      "<h1>Г'юстоне, у нас проблема</h1> Проте є хороша новина: ми про неї знаємо та швиденько виправимо"
+      erb("500", layout: :main)
     end
   end
 

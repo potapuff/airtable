@@ -6,7 +6,7 @@ class MoocApi < Sinatra::Application
   end
 
   post '/add' do
-    Demand.append!(params[:university].sanitize, params[:value].sanitize)
+    Demand.append!(params)
     erb(:greetings, layout: :main)
   end
 
