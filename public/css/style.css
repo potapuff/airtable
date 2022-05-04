@@ -73,7 +73,7 @@ header {
     height-min: 160px;
     background-color: #EBF3FF;
     margin: 0 auto;
-    padding: 60px 40px 60px 40px;
+    padding: 60px 40px 40px 40px;
 }
 
 .edu {
@@ -114,12 +114,12 @@ footer {
 }
 
 .btn {
-   border-radius: 0;
-   padding: 2rem;
+   border-radius: 0 !important;
+   padding: 1rem 2rem !important;
 }
 .btn-primary {
-    background-color: #0056D2;
-    color: white;
+    background-color: #0056D2 !important;
+    color: white !important;
 }
 
 @media (max-width: 1695px) {
@@ -137,4 +137,20 @@ footer {
         max-width: 300px;
         margin-left: 21%;
     }
+}
+
+.select2-selection--single{
+    border-radius: 0 !important;
+    border: 3px solid #0056D2 !important;
+    min-height: 3rem !important;
+    font-size: 150%;
+}
+
+.select2-selection__arrow{
+    background: #0056D2 !important;
+    min-height: 2.9rem !important;
+    min-width: 3rem !important;
+}
+.select2-selection__arrow b{
+    border-top-color: white !important;
 }
