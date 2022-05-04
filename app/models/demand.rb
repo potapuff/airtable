@@ -8,12 +8,10 @@ class Demand
   KEYS = [:UA,:EN,:url,:email,:value]
 
   def self.append!(params)
-    worksheet = auth
-    puts params.inspect
-
     result = KEYS.map { |key| params[key].sanitize }
-
     throw "Bad value" if result.all?{|value|  value.empty? }
+
+    worksheet = auth
     worksheet.insert_rows(worksheet.num_rows + 1, [result])
     worksheet.save
   end

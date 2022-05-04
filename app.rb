@@ -40,6 +40,14 @@ class MoocApi < Sinatra::Application
     end
   end
 
+  before "*" do
+    if %w[en uk].include? params[:lang]
+      session[:lang] = params[:lang]
+      params.delete :lang
+    end
+    session[:lang] ||= 'uk'
+  end
+
   require './app/routes/info_api.rb'
 
   options "*" do
@@ -51,7 +59,7 @@ class MoocApi < Sinatra::Application
 
   not_found do
     status 404
-    erb("404", layout: :main)
+    i18n_erb("404", layout: :main)
   end
 
   error do
@@ -60,8 +68,17 @@ class MoocApi < Sinatra::Application
     if settings.show_exceptions
       "Application error\n#{e}\n#{e.backtrace.join("\n")}".gsub(/\n/, '<br />')
     else
-      erb("500", layout: :main)
+      i18n_erb("500", layout: :main)
     end
+  end
+
+private
+
+  def i18n_erb(template, options = {})
+    if options[:layout]
+      options[:layout] = (session[:lang]+'/'+options[:layout].to_s).to_sym
+    end
+    erb((session[:lang]+'/'+template.to_s).to_sym, options)
   end
 
 end

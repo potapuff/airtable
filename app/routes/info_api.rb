@@ -2,12 +2,12 @@ class MoocApi < Sinatra::Application
 
   get '/' do
     @unis = University.cached_all
-    erb(:index, layout: :main)
+    i18n_erb(:index, layout: :main)
   end
 
   post '/add' do
     Demand.append!(params)
-    erb(:greetings, layout: :main)
+    i18n_erb(:greetings, layout: :main)
   end
 
   get '/ping' do
