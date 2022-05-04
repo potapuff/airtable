@@ -4,6 +4,16 @@ class String
   end
 end
 
+class NilClass
+  def sanitize
+    self
+  end
+
+  def empty?
+    true
+  end
+end
+
 module Sinatra
   module TextHelpers
 

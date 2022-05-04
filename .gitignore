@@ -35,8 +35,5 @@ nohup.out
 
 test*.rb
 
-doc_generator/build/
-doc_generator/source/index.html.md
-public/docs
-public/qr
-public/storage
+/config/*.json
+/config/*.yml

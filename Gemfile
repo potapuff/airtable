@@ -7,7 +7,7 @@ gem 'sinatra'
 gem 'sinatra-contrib'
 gem "sinatra-cross_origin", "~> 0.3.1"
 gem 'webrick'
-gem 'airrecord'
+gem 'google_drive'
 
 #Security
 gem 'sanitize'

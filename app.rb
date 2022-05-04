@@ -5,11 +5,12 @@ require 'sinatra/config_file'
 require 'sinatra/required_params'
 require 'rollbar/middleware/sinatra'
 
-class AlbumsApi < Sinatra::Application
+class MoocApi < Sinatra::Application
 
   #set :environment, ENV['RACK_ENV']
   use Rollbar::Middleware::Sinatra
 
+  puts Sinatra::Application.settings.environment
   config_file File.join(File.dirname(__FILE__),
                         'config',
                         "#{Sinatra::Application.settings.environment}.yml")
@@ -28,13 +29,15 @@ class AlbumsApi < Sinatra::Application
     Rollbar.configure do |config|
       config.access_token = settings.rollbar
     end
-    Airrecord.api_key = settings.airtable_key
   end
 
   %w{helpers models}.each {|dir| Dir.glob("./app/#{dir}/*.rb", &method(:require))}
 
   configure :production, :development do
-    [Demand, University].each {|clazz| clazz.base_key = settings.airtable_base }
+    [University, Demand].each do |klass|
+      klass.database = settings.database["name"]
+      klass.table_gid = settings.database["tables"][klass.to_s.downcase]
+    end
   end
 
   require './app/routes/info_api.rb'
@@ -42,20 +45,19 @@ class AlbumsApi < Sinatra::Application
   options "*" do
     response.headers["Allow"] = "HEAD,GET,PUT,POST,DELETE,OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
-    response.headers["Access-Control-Allow-Origin"] = AlbumsApi.settings.url
+    response.headers["Access-Control-Allow-Origin"] = settings.url
     200
   end
 
-  before do
-    #authenticate!
-  end
 
   error do
     status 500
     e = env['sinatra.error']
-    "Application error\n#{e}\n#{e.backtrace.join("\n")}"
+    if settings.show_exceptions
+      "Application error\n#{e}\n#{e.backtrace.join("\n")}".gsub(/\n/, '<br />')
+    else
+      "<h1>Г'юстоне, у нас проблема</h1> Проте є хороша новина: ми про неї знаємо та швиденько виправимо"
+    end
   end
-
-  private
 
 end

@@ -3,4 +3,4 @@ require 'bundler'
 
 Bundler.require
 require './app'
-run AlbumsApi
+run MoocApi

@@ -19,11 +19,29 @@
 
 <script id="basic_search" type="x-tmpl-mustache">
 <div class="row paper">
-  <h1>{{NameUA}}</h1>
-  <h2>{{NameEN}}</h2>
-
+  <form action="/add" method="POST">
+  <div class="row mt-2">
+  <label class="col-sm-2 col-form-label">Назва</label>
+  <div class="col-sm-10">
+    <input type="text" class="form-control"  value="{{text}}" disabled>
+    <input type="hidden" class="form-control" name="university" value="{{text}}">
+  </div>
+  </div>
+  <div class="row mt-2">
+  <label class="col-sm-2 col-form-label">Щось ще</label>
+  <div class="col-sm-10">
+    <input type="text" class="form-control" value="" name="value" required>
+  </div>
+  </div>
+  <div class="row mt-2">
+  <div class="col-sm-12 text-center">
+    <button type='submit'>Записати</button>
+  </div>
+  </div>
+  </form>
 </div>
 </script>
+
 <script>
 
     template = document.getElementById('basic_search').innerHTML;
@@ -31,9 +49,8 @@
 
   let data =<%= MultiJson.dump(@unis) %>;
   let select = $.map(data, function (obj) {
-      obj.id = obj.ID;
-      obj.text = obj.NameUA;// || obj.NameEN
-      return obj;
+      obj.id = obj.text;
+      return  obj;
   });
 
     function matchCustom(params, data) {
@@ -49,8 +66,8 @@
 
         // `params.term` should be the term that is used for searching
         // `data.text` is the text that is displayed for the data object
-        if (data.text.indexOf(params.term) > -1 || ( data.NameEN && data.NameEN.indexOf(params.term) > -1)) {
-            var modifiedData = $.extend({}, data, true);
+        if (data.text.indexOf(params.term) > -1 || ( data.EN && data.EN.indexOf(params.term) > -1)) {
+            let modifiedData = $.extend({}, data, true);
             return modifiedData;
         }
 
@@ -73,10 +90,12 @@
           }
       }).on('select2:select', function (e) {
           let value = e.params.data;
-          document.getElementById('result').innerHTML = Mustache.render(template, value);
           console.log(value);
-      }).on("select2-highlight", function(e) {
-          console.log("highlighted val=" + e.val + " choice=" + e.choice.text);
-      })
+
+          if (value.URL.indexOf("http") > -1) {
+            return window.location.href = value.URL;
+          }
+          document.getElementById('result').innerHTML = Mustache.render(template, value);
+      });
   });
 </script>
