@@ -34,10 +34,15 @@ class University
   end
 
   def self.last_updated
-    @@holder.nil && @@holder[:stamp]
+    @@holder && @@holder[:stamp]
   end
 
-private
+  def self.reset_cache
+    @@holder = nil
+  end
+
+
+  private
 
   def self.auth
     session = GoogleDrive::Session.from_service_account_key("config/key.json")

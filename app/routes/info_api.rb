@@ -11,7 +11,12 @@ class MoocApi < Sinatra::Application
   end
 
   get '/ping' do
-    [200, University.last_update || 'never']
+    [200, University.last_updated || 'never']
+  end
+
+  get '/reset' do
+    University.reset_cache
+    redirect '/'
   end
 
 end
