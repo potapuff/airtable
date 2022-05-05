@@ -6,7 +6,7 @@ class MoocApi < Sinatra::Application
   end
 
   post '/add' do
-    Demand.append!(params)
+    (params.delete(:type) == 'program' ) ?  Program.append!(params) : Demand.append!(params)
     i18n_erb(:greetings, layout: :main)
   end
 

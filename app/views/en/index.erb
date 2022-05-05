@@ -107,8 +107,8 @@
 
     let data =<%= MultiJson.dump(@unis) %>;
     let select = $.map(data, function (obj) {
-        obj.id = obj.UA;
-        obj.text = obj.UA;
+        obj.id = obj.EN;
+        obj.text = obj.EN;
         return obj;
     });
 
