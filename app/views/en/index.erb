@@ -70,22 +70,35 @@
 
 </script>
 
-<script id="noadmin" type="x-tmpl-mustache">
-  <h1>{{text}}</h1>
+<script id="no-admin-and-url" type="x-tmpl-mustache">
   <p>Нажаль не призначено адміністратора</p>
 </script>
 
-<script id="ok" type="x-tmpl-mustache">
-  <h1>{{text}}</h1>
+<script id="no-admin" type="x-tmpl-mustache">
   <div class="row mt-2">
   <p>Реєстація для Вашого закладу можлива із потшт  &nbsp;<i>ваша-пошта</i>@<strong>{{domain}}</strong></p>
+  </div>
+  <div class="alert alert-primary" role="alert">
+    Нажаль для Вашого ВНЗ не вказано відповідальну особу.
   </div>
   <div class="row mt-2">
     <div class="col-sm-12 text-center">
      <a class="btn btn-primary" href='{{URL}}'>Перейти до сайту</a>
     </div>
   </div>
+</script>
 
+
+<script id="ok" type="x-tmpl-mustache">
+  <div class="row mt-2">
+  <p>Реєстація для Вашого закладу можлива із потшт  &nbsp;<i>ваша-пошта</i>@<strong>{{domain}}</strong></p>
+
+  </div>
+  <div class="row mt-2">
+    <div class="col-sm-12 text-center">
+     <a class="btn btn-primary" href='{{URL}}'>Перейти до сайту</a>
+    </div>
+  </div>
 </script>
 
 
@@ -94,8 +107,8 @@
 
     let data =<%= MultiJson.dump(@unis) %>;
     let select = $.map(data, function (obj) {
-        obj.id = obj.EN;
-        obj.text = obj.EN;
+        obj.id = obj.UA;
+        obj.text = obj.UA;
         return obj;
     });
 
@@ -107,9 +120,9 @@
         if (typeof data.text === 'undefined') {
             return null;
         }
-
-        if ((data.UA && data.UA.indexOf(params.term) > -1) ||
-            (data.EN && data.EN.indexOf(params.term) > -1)) {
+        let upper = params.term.toUpperCase();
+        if ((data.UA && data.UA.toUpperCase().indexOf(upper) > -1) ||
+          (data.EN && data.EN.toUpperCase().indexOf(upper) > -1)) {
             let modifiedData = $.extend({}, data, true);
             return modifiedData;
         }
@@ -120,7 +133,7 @@
     $(document).ready(function () {
         $('#select').select2({
             data: select,
-            placeholder: 'Select your university',
+            placeholder: 'Виберіть ВНЗ',
             allowClear: true,
             matcher: matchCustom,
             tags: true
@@ -130,8 +143,10 @@
             console.log(value)
             if (value.UA == undefined && value.EN == undefined) {
                 variant = 'new';
+            } else if (value.admin === false && value.URL.indexOf("http") === -1) {
+                variant = 'no-admin-and-url';
             } else if (value.admin === false) {
-                variant = 'noadmin';
+                variant = 'no-admin';
             } else if (value.URL.indexOf("http") === -1) {
                 variant = 'ask'
             } else {
