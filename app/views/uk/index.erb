@@ -6,7 +6,6 @@
     </h1>
   </div>
 
-
   <div class="edufinder">
     <main>
       <section class='container'>
@@ -15,7 +14,7 @@
             <option value=""></option>
           </select>
         </div>
-        <div id="result" class="p-3"></div>
+        <div id="result" class="pt-3"></div>
       </section>
 
     </main>
@@ -24,7 +23,7 @@
 
 </div>
 
-<script id="new" type="x-tmpl-mustache">
+<script id="new-university" type="x-tmpl-mustache">
     <p>
       Ви не можете знайти свій заклад?  Тоді заповніть форму нижче.
     </p>
@@ -40,74 +39,86 @@
          <label for="f-email" class="form-label">E-mail</label>
          <input type="email" class="form-control" id="f-email" name="email">
        </div>
+       <div class="row mt-2">
+       <div class="col-sm-12 text-center">
        <button type="submit" class="btn btn-primary">Надіслати запит</button>
+       <p>Нам знадобиться кілька днів, щоб додати заклад. </p>
+       </div></div>
     </form>
 </script>
 
 
-<script id="ask" type="x-tmpl-mustache">
+<script id="new-program" type="x-tmpl-mustache">
+  <p>
+     На жаль, програма для вашого закладу ще не створена
+  </p>
   <form action="/add" method="POST">
-  <div class="row mt-2">
-  <label class="col-sm-2 col-form-label">Назва</label>
-  <div class="col-sm-10">
-    <input type="text" class="form-control"  value="{{text}}" disabled>
     <input type="hidden" class="form-control" name="university" value="{{text}}">
-  </div>
-  </div>
+    <input type="hidden" class="form-control" name="id" value="{{id}}">
+    <input type="hidden" class="form-control" name="type" value="program">
   <div class="row mt-2">
-  <label class="col-sm-2 col-form-label">Щось ще</label>
+  <label class="col-sm-2 col-form-label">Email</label>
   <div class="col-sm-10">
-    <input type="text" class="form-control" value="" name="value" required>
+    <input type="email" class="form-control" value="" name="email" required>
   </div>
   </div>
   <div class="row mt-2">
   <div class="col-sm-12 text-center">
-    <button type='submit'>Записати</button>
+    <button type="submit" class="btn btn-primary">Надіслати запит</button>
+    <p>Нам знадобиться до двох тижнів, щоб додати програму.</p>
   </div>
   </div>
   </form>
-
 </script>
-
-<script id="no-admin-and-url" type="x-tmpl-mustache">
-  <p>Нажаль не призначено адміністратора</p>
-</script>
-
-<script id="no-admin" type="x-tmpl-mustache">
-  <div class="row mt-2">
-  <p>Реєстація для Вашого закладу можлива із потшт  &nbsp;<i>ваша-пошта</i>@<strong>{{domain}}</strong></p>
-  </div>
-  <div class="alert alert-primary" role="alert">
-    Нажаль для Вашого ВНЗ не вказано відповідальну особу.
-  </div>
-  <div class="row mt-2">
-    <div class="col-sm-12 text-center">
-     <a class="btn btn-primary" href='{{URL}}'>Перейти до сайту</a>
-    </div>
-  </div>
-</script>
-
 
 <script id="ok" type="x-tmpl-mustache">
   <div class="row mt-2">
-  <p>Реєстація для Вашого закладу можлива із потшт  &nbsp;<i>ваша-пошта</i>@<strong>{{domain}}</strong></p>
-
+  <ul>
+    <li>Реєстрація на цю програму можлива з корпоративних email в домені ХХХХХХХХ@xxx.{{domain}}</li>
+    <li>Реєстрaція на цю програму можлива за запрошенням адміністратора вашого зкладу.</li>
+  </ul>
   </div>
   <div class="row mt-2">
     <div class="col-sm-12 text-center">
-     <a class="btn btn-primary" href='{{URL}}'>Перейти до сайту</a>
+     <a class="btn btn-primary" href='{{URL}}'>Перейти</a>
     </div>
   </div>
 </script>
 
 
+<script id="no-admin" type="x-tmpl-mustache">
+  <div class="row mt-2">
+  <ul>
+    <li>Реєстрація на цю програму можлива з корпоративних email в домені ХХХХХХХХ@xxx.{{domain}}</li>
+  </ul>
+  </div>
+  <div class="row mt-2">
+    <div class="col-sm-12 text-center">
+     <a class="btn btn-primary" href='{{URL}}'>Перейти</a>
+    </div>
+  </div>
+</script>
+
+<script id="no-domain" type="x-tmpl-mustache">
+  <div class="row mt-2">
+     <p color='red'>До цієї програми ще не призначено адміністратора, зверніться до адміністрації вашого закладу.</p>
+     <p> Заклад освіти має визначити відповідальну особу та подати відповідний запит до Міністерства освіти і науки України.</p>
+  </ul>
+  </div>
+  <div class="row mt-2">
+    <div class="col-sm-12 text-center">
+     <a class="btn btn-primary" href='{{URL}}'>Перейти</a>
+    </div>
+  </div>
+</script>
+
+
+
+
 <script>
-
-
     let data =<%= MultiJson.dump(@unis) %>;
     let select = $.map(data, function (obj) {
-        obj.id = obj.UA;
-        obj.text = obj.UA;
+        obj.text = obj.EN;
         return obj;
     });
 
@@ -121,7 +132,7 @@
         }
         let upper = params.term.toUpperCase();
         if ((data.UA && data.UA.toUpperCase().indexOf(upper) > -1) ||
-            (data.EN && data.EN.toUpperCase().indexOf(upper) > -1)) {
+          (data.EN && data.EN.toUpperCase().indexOf(upper) > -1)) {
             let modifiedData = $.extend({}, data, true);
             return modifiedData;
         }
@@ -132,7 +143,7 @@
     $(document).ready(function () {
         $('#select').select2({
             data: select,
-            placeholder: 'Виберіть ВНЗ',
+            placeholder: 'Оберіть Ваш навчальний заклад',
             allowClear: true,
             matcher: matchCustom,
             tags: true
@@ -140,16 +151,21 @@
             let value = e.params.data;
             let variant;
             console.log(value)
-            if (value.UA == undefined && value.EN == undefined) {
-                variant = 'new';
-            } else if (value.admin === false && value.URL.indexOf("http") === -1) {
-                variant = 'no-admin-and-url';
-            } else if (value.admin === false) {
-                variant = 'no-admin';
-            } else if (value.URL.indexOf("http") === -1) {
-                variant = 'ask'
-            } else {
+            let has_url = value.URL && value.URL.indexOf("http") !== -1;
+            let has_admin = value.admin;
+            let has_domain = !!value.domain;
+
+            if (value.id  === value.text) {
+                //There is no University
+                variant = 'new-university';
+            }  else if (!has_url) {
+                //There is UNI but no URL
+                variant = 'new-program'
+            }
+            else if (has_admin && has_domain) {
                 variant = 'ok';
+            } else if (!has_admin) {
+                variant = has_domain ? 'no-admin' : 'no-domain';
             }
             let template = document.getElementById(variant).innerHTML;
             document.getElementById('result').innerHTML = Mustache.render(template, value);

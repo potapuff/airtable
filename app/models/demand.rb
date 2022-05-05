@@ -5,7 +5,7 @@ class Demand
     attr_accessor :database
   end
 
-  KEYS = [:UA,:EN,:url,:email,:value]
+  KEYS = [:id, :UA,:EN,:url,:email,:value]
 
   def self.append!(params)
     result = KEYS.map { |key| params[key].sanitize }

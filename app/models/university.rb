@@ -12,6 +12,7 @@ class University
     auth.rows.each do |row|
       next if (i+=1) == 1
       data << {
+        :id => row[0],
         :domain => row[2],
         :UA => row[3],
         :EN => row[4],

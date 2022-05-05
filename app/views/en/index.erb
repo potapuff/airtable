@@ -9,14 +9,13 @@
 
   <div class="edufinder">
     <main>
-
       <section class='container'>
         <div class="row" style="--bs-gutter-x: 0;">
           <select id="select" width="100%">
             <option value=""></option>
           </select>
         </div>
-        <div id="result" class="p-3"></div>
+        <div id="result" class="pt-3"></div>
       </section>
 
     </main>
@@ -25,15 +24,15 @@
 
 </div>
 
-<script id="new" type="x-tmpl-mustache">
+<script id="new-university" type="x-tmpl-mustache">
     <p>
-      Ви не можете знайти свій заклад?  Тоді заповніть форму нижче.
+      Can't find your institution? Then fill out the form below.
     </p>
     <form action='/add' method="POST">
        <input type="hidden" name="UA" value="{{text}}">
        <div class="mb-3">
          <label for="f-url" class="form-label">
-             Спробуйте знайти <a href="https://registry.edbo.gov.ua" target="blank" style="text-decoration: underline;">тут</a>
+             Try to find <a href="https://registry.edbo.gov.ua" target="blank" style="text-decoration: underline;">here</a>
          </label>
          <input type="url" class="form-control" id="f-url"  name="url" placeholder="https://registry.edbo.gov.ua/university/ххххх/" required>
        </div>
@@ -41,73 +40,85 @@
          <label for="f-email" class="form-label">E-mail</label>
          <input type="email" class="form-control" id="f-email" name="email">
        </div>
-       <button type="submit" class="btn btn-primary">Надіслати запит</button>
+       <div class="row mt-2">
+       <div class="col-sm-12 text-center">
+       <button type="submit" class="btn btn-primary">Send request</button>
+       <p>It will take us a few days to add the institution.</p>
+       </div></div>
     </form>
 </script>
 
 
-<script id="ask" type="x-tmpl-mustache">
+<script id="new-program" type="x-tmpl-mustache">
+  <p>
+     Unfortunately, the program for your institution has not yet been created
+  </p>
   <form action="/add" method="POST">
-  <div class="row mt-2">
-  <label class="col-sm-2 col-form-label">Назва</label>
-  <div class="col-sm-10">
-    <input type="text" class="form-control"  value="{{text}}" disabled>
     <input type="hidden" class="form-control" name="university" value="{{text}}">
-  </div>
-  </div>
+    <input type="hidden" class="form-control" name="id" value="{{id}}">
+    <input type="hidden" class="form-control" name="type" value="program">
   <div class="row mt-2">
-  <label class="col-sm-2 col-form-label">Щось ще</label>
+  <label class="col-sm-2 col-form-label">Email</label>
   <div class="col-sm-10">
-    <input type="text" class="form-control" value="" name="value" required>
+    <input type="email" class="form-control" value="" name="email" required>
   </div>
   </div>
   <div class="row mt-2">
   <div class="col-sm-12 text-center">
-    <button type='submit'>Записати</button>
+    <button type="submit" class="btn btn-primary">Send request</button>
+    <p>It will take us up to two weeks to add the program.</p>
   </div>
   </div>
   </form>
-
 </script>
-
-<script id="no-admin-and-url" type="x-tmpl-mustache">
-  <p>Нажаль не призначено адміністратора</p>
-</script>
-
-<script id="no-admin" type="x-tmpl-mustache">
-  <div class="row mt-2">
-  <p>Реєстація для Вашого закладу можлива із потшт  &nbsp;<i>ваша-пошта</i>@<strong>{{domain}}</strong></p>
-  </div>
-  <div class="alert alert-primary" role="alert">
-    Нажаль для Вашого ВНЗ не вказано відповідальну особу.
-  </div>
-  <div class="row mt-2">
-    <div class="col-sm-12 text-center">
-     <a class="btn btn-primary" href='{{URL}}'>Перейти до сайту</a>
-    </div>
-  </div>
-</script>
-
 
 <script id="ok" type="x-tmpl-mustache">
   <div class="row mt-2">
-  <p>Реєстація для Вашого закладу можлива із потшт  &nbsp;<i>ваша-пошта</i>@<strong>{{domain}}</strong></p>
-
+  <ul>
+    <li>Registration for this program is possible from corporate email in the domain ХХХХХХХХ@xxx.{{domain}}</li>
+    <li>Registration for this program is possible at the invitation of the administrator of your institution.</li>
+  </ul>
   </div>
   <div class="row mt-2">
     <div class="col-sm-12 text-center">
-     <a class="btn btn-primary" href='{{URL}}'>Перейти до сайту</a>
+     <a class="btn btn-primary" href='{{URL}}'>Go to site</a>
     </div>
   </div>
 </script>
 
 
+<script id="no-admin" type="x-tmpl-mustache">
+  <div class="row mt-2">
+  <ul>
+    <li>Registration for this program is possible from corporate email in the domain ХХХХХХХХ@xxx.{{domain}}</li>
+  </ul>
+  </div>
+  <div class="row mt-2">
+    <div class="col-sm-12 text-center">
+     <a class="btn btn-primary" href='{{URL}}'>Go to site</a>
+    </div>
+  </div>
+</script>
+
+<script id="no-domain" type="x-tmpl-mustache">
+  <div class="row mt-2">
+     <p color='red'>An administrator has not yet been assigned to this program, please contact the administration of your institution.</p>
+     <p>The educational institution must determine the responsible person and submit a request to the Ministry of Education and Science of Ukraine.</p>
+  </ul>
+  </div>
+  <div class="row mt-2">
+    <div class="col-sm-12 text-center">
+     <a class="btn btn-primary" href='{{URL}}'>Go to site</a>
+    </div>
+  </div>
+</script>
+
+
+
+
 <script>
-
-
     let data =<%= MultiJson.dump(@unis) %>;
     let select = $.map(data, function (obj) {
-        obj.id = obj.EN;
         obj.text = obj.EN;
         return obj;
     });
@@ -133,7 +144,7 @@
     $(document).ready(function () {
         $('#select').select2({
             data: select,
-            placeholder: 'Виберіть ВНЗ',
+            placeholder: 'Choose your institution',
             allowClear: true,
             matcher: matchCustom,
             tags: true
@@ -141,16 +152,21 @@
             let value = e.params.data;
             let variant;
             console.log(value)
-            if (value.UA == undefined && value.EN == undefined) {
-                variant = 'new';
-            } else if (value.admin === false && value.URL.indexOf("http") === -1) {
-                variant = 'no-admin-and-url';
-            } else if (value.admin === false) {
-                variant = 'no-admin';
-            } else if (value.URL.indexOf("http") === -1) {
-                variant = 'ask'
-            } else {
+            let has_url = value.URL && value.URL.indexOf("http") !== -1;
+            let has_admin = value.admin;
+            let has_domain = !!value.domain;
+
+            if (value.id  === value.text) {
+                //There is no University
+                variant = 'new-university';
+            }  else if (!has_url) {
+                //There is UNI but no URL
+                variant = 'new-program'
+            }
+            else if (has_admin && has_domain) {
                 variant = 'ok';
+            } else if (!has_admin) {
+                variant = has_domain ? 'no-admin' : 'no-domain';
             }
             let template = document.getElementById(variant).innerHTML;
             document.getElementById('result').innerHTML = Mustache.render(template, value);
