@@ -53,7 +53,8 @@
      На жаль, програма для вашого закладу ще не створена
   </p>
   <form action="/add" method="POST">
-    <input type="hidden" class="form-control" name="university" value="{{text}}">
+    <input type="hidden" class="form-control" name="UA" value="{{UA}}">
+    <input type="hidden" class="form-control" name="EN" value="{{EN}}">
     <input type="hidden" class="form-control" name="id" value="{{id}}">
     <input type="hidden" class="form-control" name="type" value="program">
   <div class="row mt-2">
@@ -118,7 +119,7 @@
 <script>
     let data =<%= MultiJson.dump(@unis) %>;
     let select = $.map(data, function (obj) {
-        obj.text = obj.EN;
+        obj.text = obj.UA;
         return obj;
     });
 

@@ -11,7 +11,7 @@ class MoocApi < Sinatra::Application
   end
 
   get '/ping' do
-    [200, University.last_updated || 'never']
+    [200, (University.last_updated || 'never').to_s]
   end
 
   get '/reset' do
