@@ -27,7 +27,7 @@ class MoocApi < Sinatra::Application
     enable :cross_origin
 
     Rollbar.configure do |config|
-      config.access_token = settings.rollbar
+      config.access_token = settings.rollbar['server_token']
     end
   end
 
