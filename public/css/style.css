@@ -3,6 +3,7 @@ body {
     margin: 0 0 0 0;
     padding: 0 0 0 0;
     height: 100%;
+    min-height: 100%;
 }
 
 header {
@@ -95,6 +96,10 @@ footer {
     align-items: flex-end;
     flex-direction: column;
 
+    bottom: 0;
+    background-size: cover;
+    width: 100%;
+
 }
 
 .footer_inner {
@@ -153,4 +158,38 @@ footer {
 }
 .select2-selection__arrow b{
     border-top-color: white !important;
+}
+
+
+@media (max-height:1030px){
+    .footer{
+        position: static;
+    }
+}
+
+
+@media (max-width:1110px){
+    .edudescr {
+        max-width: 390px;
+        margin: 0 auto;}
+}
+
+
+.lang{
+    display: flex;
+    align-self: flex-start;
+    margin-top: 3%;
+    text-decoration: underline;
+    text-decoration-color: white;
+}
+
+.lang a{color: white;
+        text-decoration: none;
+}
+
+.lang a:hover{
+    color: white;
+}
+.lang:hover{
+    text-decoration-style: dashed;
 }
