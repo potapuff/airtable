@@ -1,0 +1,1 @@
+docker run  --name mooc -it -p3000:3000 -v %cd%\secrets://mooc/config:ro mooc-alpine

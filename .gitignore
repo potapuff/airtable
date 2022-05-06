@@ -37,3 +37,4 @@ test*.rb
 
 /config/*.json
 /config/*.yml
+/secrets
