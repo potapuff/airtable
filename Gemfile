@@ -9,9 +9,6 @@ gem "sinatra-cross_origin", "~> 0.3.1"
 gem 'thin', require:false
 gem 'google_drive'
 
-#Security
-gem 'sanitize'
-
 group :production, :development do
   #   gem 'pg'
    gem 'rollbar'

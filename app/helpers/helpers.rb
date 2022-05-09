@@ -1,6 +1,6 @@
 class String
   def sanitize
-    Sanitize.fragment(self)
+    self.gsub(/<\/?[^>]*>/, "")
   end
 end
 
