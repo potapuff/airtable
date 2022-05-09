@@ -3,7 +3,6 @@ GEM
   specs:
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
-    crass (1.0.6)
     daemons (1.4.1)
     declarative (0.0.20)
     eventmachine (1.2.7)
@@ -85,9 +84,6 @@ GEM
     rexml (3.2.5)
     rollbar (3.3.0)
     ruby2_keywords (0.0.5)
-    sanitize (6.0.0)
-      crass (~> 1.0.2)
-      nokogiri (>= 1.12.0)
     signet (0.16.1)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.0)
@@ -124,7 +120,6 @@ DEPENDENCIES
   oj
   rake
   rollbar
-  sanitize
   sinatra
   sinatra-contrib
   sinatra-cross_origin (~> 0.3.1)

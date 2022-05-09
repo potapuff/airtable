@@ -118,7 +118,7 @@
 
 
 <script>
-    let data =<%= MultiJson.dump(@unis) %>;
+    let data =<%= MultiJson.dump(@units) %>;
     let select = $.map(data, function (obj) {
         obj.text = !!obj.EN ? obj.EN : obj.UA;
         return obj;

@@ -1,13 +1,24 @@
 class MoocApi < Sinatra::Application
 
   get '/' do
-    @unis = University.cached_all
+    @units = University.cached_all
     i18n_erb(:index, layout: :main)
   end
 
   post '/add' do
-    (params.delete(:type) == 'program' ) ?  Program.append!(params) : Demand.append!(params)
-    i18n_erb(:greetings, layout: :main)
+    case (params.delete(:type))
+      when 'program' then Program.append!(params)
+      when 'bailee'  then Bailee.append!(params)
+    else
+      Demand.append!(params)
+    end
+
+    i18n_erb(:greetings, layout: request.xhr? ? nil : :main)
+  end
+
+  get '/bailee' do
+    @units = University.cached_all
+    i18n_erb(:bailee, layout: :main)
   end
 
   get '/ping' do
