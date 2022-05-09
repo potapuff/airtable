@@ -1,3 +1,4 @@
+require 'google_drive'
 session = GoogleDrive::Session.from_service_account_key("./config/key.json")
 session.files.each do |file|
   p file

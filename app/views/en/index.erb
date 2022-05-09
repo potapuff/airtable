@@ -29,7 +29,7 @@
       Can't find your institution? Then fill out the form below.
     </p>
     <form action='/add' method="POST">
-       <input type="hidden" name="UA" value="{{text}}">
+       <input type="hidden" name="EN" value="{{text}}">
        <div class="mb-3">
          <label for="f-url" class="form-label">
              Try to find <a href="https://registry.edbo.gov.ua" target="blank" style="text-decoration: underline;">here</a>
@@ -54,7 +54,8 @@
      Unfortunately, the program for your institution has not yet been created
   </p>
   <form action="/add" method="POST">
-    <input type="hidden" class="form-control" name="university" value="{{text}}">
+    <input type="hidden" class="form-control" name="EN" value="{{EN}}">
+    <input type="hidden" class="form-control" name="UA" value="{{UA}}">
     <input type="hidden" class="form-control" name="id" value="{{id}}">
     <input type="hidden" class="form-control" name="type" value="program">
   <div class="row mt-2">
@@ -66,7 +67,7 @@
   <div class="row mt-2">
   <div class="col-sm-12 text-center">
     <button type="submit" class="btn btn-primary">Send request</button>
-    <p>It will take us up to two weeks to add the program.</p>
+    <p>It will take us up to two days to add the program.</p>
   </div>
   </div>
   </form>
@@ -119,7 +120,7 @@
 <script>
     let data =<%= MultiJson.dump(@unis) %>;
     let select = $.map(data, function (obj) {
-        obj.text = obj.EN;
+        obj.text = !!obj.EN ? obj.EN : obj.UA;
         return obj;
     });
 

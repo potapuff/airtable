@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  mooc_container:
+    build: .
+    image: "mooc-alpine-img"
+    container_name: "mooc-alpine"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./secrets:/mooc/config
