@@ -30,4 +30,16 @@ class MoocApi < Sinatra::Application
     redirect '/'
   end
 
+
+  if MoocApi.settings.cache_ttl.to_i > 0
+  Thread.new do
+    while true do
+      University.cached_all(true)
+      sleep MoocApi.settings.cache_ttl.to_i*3/4
+    end
+  end
+  else
+    puts 'Cache disabled. Set cache_ttl (in seconds) to enable.'
+  end
+
 end

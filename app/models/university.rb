@@ -23,9 +23,11 @@ class University
     data
   end
 
-  def self.cached_all
+
+  def self.cached_all(force = false)
+    return all unless MoocApi.settings.cache_ttl.to_i > 0
     stamp = Time.now
-    if @@holder.nil? || (@@holder[:stamp] < stamp - 5*60)
+    if @@holder.nil? || force || (@@holder[:stamp] < stamp - MoocApi.settings.cache_ttl.to_i)
       @@holder = {
         stamp: stamp,
         data: all
