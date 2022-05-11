@@ -1,7 +1,11 @@
 <div class="edusearch">
   <div class="edudescr">
     <h1 class="edudescr_title">
-      (сторінка для заклaдів)
+      Задля пришвидшення адаптації ЗВО до сучасних реалій освіти в умовах війни ми прагнемо підключити міжнародних партнерів для надання освітніх матеріалів для студентів з усієї України.
+      <br/>
+      Для цього нам вкрай потрібні контакти відповідального за впровадження онлайн-навчання в Вашому університеті. В подальшому ми будемо контактувати з цією особою з наступними питаннями та завданнями.
+      <br/>
+      Все буде Україна! Дякуємо!
     </h1>
   </div>
 
@@ -18,7 +22,6 @@
 
     </main>
   </div>
-
 
 </div>
 
@@ -46,46 +49,7 @@
     </form>
 </script>
 
-
-<script id="program" type="x-tmpl-mustache">
-  <div class="row">
-    Адреса програми для Вашого закладу {{URL}}
-  </div>
-</script>
-
-<script id="new-program" type="x-tmpl-mustache">
-  <p>
-     На жаль, програма для Вашого закладу ще не створена
-  </p>
-  <form action="/add" method="POST" >
-    <input type="hidden" class="form-control" name="UA" value="{{UA}}">
-    <input type="hidden" class="form-control" name="id" value="{{id}}">
-    <input type="hidden" class="form-control" name="type" value="program">
-  <div class="row mt-2">
-  <label class="col-sm-2 col-form-label">Email</label>
-  <div class="col-sm-10">
-    <input type="email" class="form-control" value="" name="email" required>
-  </div>
-  </div>
-  <div class="row mt-2">
-  <div class="col-sm-12 text-center">
-    <button type="submit" class="btn btn-primary">Надіслати запит</button>
-    <p>Нам знадобиться до двох днів, щоб додати програму.</p>
-  </div>
-  </div>
-  </form>
-</script>
-
-<script id="admin" type="x-tmpl-mustache">
-  <div class="row">
-    Відповідальна особа:  Так
-  </div>
-</script>
-
-<script id="new-admin" type="x-tmpl-mustache">
-  <p>
-     Адміністратора не призначено.
-  </p>
+<script id="new-form" type="x-tmpl-mustache">
   <form action="/add" method="POST" >
     <input type="hidden" class="form-control" name="id" value="{{id}}">
     <input type="hidden" class="form-control" name="type" value="bailee">
@@ -117,32 +81,6 @@
   <label class="col-sm-2 col-form-label">моб.тел. адміністратора</label>
   <div class="col-sm-10">
     <input type="tel" class="form-control" value="" name="bailee_tel" required>
-  </div>
-  </div>
-  <div class="row mt-2">
-  <div class="col-sm-12 text-center">
-    <button type="submit" class="btn btn-primary">Надіслати запит</button>
-  </div>
-  </div>
-  </form>
-</script>
-
-<script id="domain" type="x-tmpl-mustache">
-   <div class="row">
-      Домен (корпоративної пошти, для автоатизації підключення): {{domain}}
-   </div>
-</script>
-
-<script id="new-domain" type="x-tmpl-mustache">
-  <p>
-     На жаль, домен корпаративної пошти для вашого закаладу ще не задано.
-  </p>
-  <form action="/add" method="POST" >
-    <input type="hidden" class="form-control" name="id" value="{{id}}">
-  <div class="row mt-2">
-  <label class="col-sm-2 col-form-label">Домен</label>
-  <div class="col-sm-10">
-    <input type="text" class="form-control" value="" name="value" required>
   </div>
   </div>
   <div class="row mt-2">
@@ -194,16 +132,11 @@
             let value = e.params.data;
             let holder = document.getElementById('result');
 
-            let has_url = value.URL && value.URL.indexOf("http") !== -1;
-            let has_admin = value.admin;
-            let has_domain = !!value.domain;
             holder.innerHTML = '';
             if (value.id  === value.text) {
                 holder.innerHTML =  render('new-university', value);
             }  else {
-                holder.innerHTML += render(has_url ?    'program' : 'new-program', value);
-                holder.innerHTML += render(has_domain ? 'domain' : 'new-domain', value);
-                holder.innerHTML += render(has_admin ?  'admin' : 'new-admin', value);
+                holder.innerHTML += render('new-form', value);
             }
             $(holder).find('form').on("submit", function(event) {
                 event.preventDefault();

@@ -16,9 +16,9 @@ class MoocApi < Sinatra::Application
     i18n_erb(:greetings, layout: request.xhr? ? nil : :main)
   end
 
-  get '/bailee' do
+  get '/rector' do
     @units = University.cached_all
-    i18n_erb(:bailee, layout: :main)
+    erb(:rector, layout: :rector_layout)
   end
 
   get '/ping' do

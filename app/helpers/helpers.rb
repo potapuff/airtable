@@ -2,6 +2,10 @@ class String
   def sanitize
     self.gsub(/<\/?[^>]*>/, "")
   end
+
+  def has? str
+    index(str) != nil
+  end
 end
 
 class NilClass
@@ -11,6 +15,10 @@ class NilClass
 
   def empty?
     true
+  end
+
+  def has? str
+    false
   end
 end
 
