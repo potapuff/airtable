@@ -7,7 +7,6 @@ require 'rollbar/middleware/sinatra'
 
 class MoocApi < Sinatra::Application
 
-  #set :environment, ENV['RACK_ENV']
   use Rollbar::Middleware::Sinatra
 
   puts Sinatra::Application.settings.environment
@@ -28,6 +27,7 @@ class MoocApi < Sinatra::Application
 
     Rollbar.configure do |config|
       config.access_token = settings.rollbar['server_token']
+      config.disable_rack_monkey_patch = true
     end
   end
 
@@ -57,8 +57,7 @@ class MoocApi < Sinatra::Application
     200
   end
 
-  not_found do
-    status 404
+  error Sinatra::NotFound do
     i18n_erb("404", layout: :main)
   end
 

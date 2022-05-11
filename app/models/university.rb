@@ -17,7 +17,7 @@ class University
         :UA => row[3],
         :EN => row[4],
         :URL => row[5],
-        :admin => !row[6].empty?
+        :admin => !row[6].empty? && !row[6].index('@').nil?
       }
     end
     data
