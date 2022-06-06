@@ -8,6 +8,20 @@ class String
   end
 end
 
+class Array
+
+  # File activesupport/lib/active_support/core_ext/enumerable.rb, line 64
+  def index_by
+    if block_given?
+      result = {}
+      each { |elem| result[yield(elem)] = elem }
+      result
+    else
+      to_enum(:index_by) { size if respond_to?(:size) }
+    end
+  end
+end
+
 class NilClass
   def sanitize
     self

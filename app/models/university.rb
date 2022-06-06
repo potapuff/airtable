@@ -7,20 +7,26 @@ class University
   end
 
   def self.all
-    data = []
     i = 0
+    data_full, data_part = [],[]
     auth.rows.each do |row|
       next if (i+=1) == 1
-      data << {
-        :id => row[0],
-        :domain => row[2],
+      data_full <<
+        {
+        :id => row[0].to_i,
+        :domain => row[2].split(/[,;]/),
         :UA => row[3],
         :EN => row[4],
         :URL => row[5],
-        :admin => row[6].has?('@')
+        :admin => row[6].split(/[,;]/)
+        }
+      data_part << {
+        :id => row[0].to_i,
+        :UA => row[3],
+        :EN => row[4],
       }
     end
-    data
+    {full: data_full.index_by{|x| x[:id]}, part: data_part}
   end
 
 

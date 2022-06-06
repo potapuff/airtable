@@ -76,8 +76,18 @@
 <script id="ok" type="x-tmpl-mustache">
   <div class="row mt-2">
   <ul>
-    <li>Registration for this program is possible from corporate email in the domain ХХХХХХХХ@xxx.{{domain}}</li>
-    <li>Registration for this program is possible at the invitation of the administrator of your institution.</li>
+    <li>Registration for this program is possible from corporate email in the domain
+      <ul class='inline-ul'>
+        {{#domain}}
+          <li>ХХХХХХХХ@xxx.{{.}}</li>
+        {{/domain}}
+      </ul>
+    </li>
+    <li>Registration for this program is possible at the invitation of the administrator of your institution. You can mail to       <ul class='inline-ul'>
+        {{#admin}}
+         <li>{{.}}</li>
+        {{/admin}}
+      </ul></li>
   </ul>
   </div>
   <div class="row mt-2">
@@ -88,10 +98,16 @@
 </script>
 
 
-<script id="no-admin" type="x-tmpl-mustache">
+<script id="domain-only" type="x-tmpl-mustache">
   <div class="row mt-2">
   <ul>
-    <li>Registration for this program is possible from corporate email in the domain ХХХХХХХХ@xxx.{{domain}}</li>
+    <li>Registration for this program is possible from corporate email in the domain
+      <ul class='inline-ul'>
+        {{#domain}}
+          <li>ХХХХХХХХ@xxx.{{.}}</li>
+        {{/domain}}
+      </ul>
+    </li>
   </ul>
   </div>
   <div class="row mt-2">
@@ -101,7 +117,26 @@
   </div>
 </script>
 
-<script id="no-domain" type="x-tmpl-mustache">
+<script id="admin-only" type="x-tmpl-mustache">
+  <div class="row mt-2">
+  <ul>
+    <li>Registration for this program is possible at the invitation of the administrator of your institution. You can mail to       <ul class='inline-ul'>
+        {{#admin}}
+         <li>{{.}}</li>
+        {{/admin}}
+      </ul>
+    </li>
+  </ul>
+  </div>
+  <div class="row mt-2">
+    <div class="col-sm-12 text-center">
+     <a class="btn btn-primary" href='{{URL}}'>Go to site</a>
+    </div>
+  </div>
+</script>
+
+
+<script id="no-all" type="x-tmpl-mustache">
   <div class="row mt-2">
      <p color='red'>An administrator has not yet been assigned to this program, please contact the administration of your institution.</p>
      <p>The educational institution must determine the responsible person and submit a request to the Ministry of Education and Science of Ukraine.</p>
@@ -113,9 +148,6 @@
     </div>
   </div>
 </script>
-
-
-
 
 <script>
     let data =<%= MultiJson.dump(@units) %>;
@@ -142,6 +174,29 @@
         return null;
     }
 
+    function render(template, data) {
+        let obj = document.getElementById(template).innerHTML;
+        return  Mustache.render(obj, data);
+    }
+
+    function process(value){
+        let has_url = value.URL && value.URL.indexOf("http") !== -1;
+        let has_admin = value.admin.length > 0;
+        let has_domain = value.domain.length > 0;
+        let variant = 'ok';
+        if (!has_url) {
+            //There is UNI but no URL
+            variant = 'new-program'
+        } else {
+            if (has_admin) {
+                variant = has_domain ? 'ok' : 'admin-only'
+            } else {
+                variant = has_domain ? 'domain-only' : 'no-all'
+            }
+        }
+        return render(variant, value);
+    }
+
     $(document).ready(function () {
         $('#select').select2({
             data: select,
@@ -151,26 +206,22 @@
             tags: true
         }).on('select2:select', function (e) {
             let value = e.params.data;
-            let variant;
-            console.log(value)
-            let has_url = value.URL && value.URL.indexOf("http") !== -1;
-            let has_admin = value.admin;
-            let has_domain = !!value.domain;
-
+            let result = document.getElementById('result');
+            console.log(value);
             if (value.id  === value.text) {
-                //There is no University
-                variant = 'new-university';
-            }  else if (!has_url) {
-                //There is UNI but no URL
-                variant = 'new-program'
-            }
-            else if (has_admin && has_domain) {
-                variant = 'ok';
-            } else if (!has_admin) {
-                variant = has_domain ? 'no-admin' : 'no-domain';
-            }
-            let template = document.getElementById(variant).innerHTML;
-            document.getElementById('result').innerHTML = Mustache.render(template, value);
-        });
-    });
+                result.innerHTML  = render('new-university', value);
+            } else {
+                result.innerHTML = 'Loading...';
+                $.ajax({
+                    type: "get",
+                    url: '/en/' + value.id,
+                    dataType: "json",
+                    encode: true
+                }).done(function (msg) {
+                    $('#result').html(process(msg));
+                }).fail(function (jqXHR, textStatus) {
+                    $('#result').html(textStatus);
+                });
+            };
+        })});
 </script>

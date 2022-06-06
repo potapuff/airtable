@@ -1,8 +1,13 @@
 class MoocApi < Sinatra::Application
 
   get '/' do
-    @units = University.cached_all
+    @units = University.cached_all[:part]
     i18n_erb(:index, layout: :main)
+  end
+
+  get '/:lang/:id' do
+    units = University.cached_all[:full]
+    json(units[params[:id].to_i] || {})
   end
 
   post '/add' do
@@ -17,7 +22,7 @@ class MoocApi < Sinatra::Application
   end
 
   get '/rector' do
-    @units = University.cached_all
+    @units = University.cached_all[:part]
     erb(:rector, layout: :rector_layout)
   end
 
