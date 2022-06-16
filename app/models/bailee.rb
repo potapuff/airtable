@@ -1,7 +1,7 @@
 require './app/models/demand.rb'
 
 class Bailee < Demand
-  KEYS = [:id,  :value, :email,   :name,   :bailee,   :bailee_tel]
+  KEYS = [:id,  :value, :name,   :bailee,   :bailee_tel, :email]
 
   def self.append!(params)
     result = KEYS.map { |key| params[key].sanitize }

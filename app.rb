@@ -57,9 +57,13 @@ class MoocApi < Sinatra::Application
     200
   end
 
-  error Sinatra::NotFound do
+  not_found do
     i18n_erb("404", layout: :main)
   end
+
+#  error Sinatra::NotFound do
+#    i18n_erb("404", layout: :main)
+#  end
 
   error do
     status 500

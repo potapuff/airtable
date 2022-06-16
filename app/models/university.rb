@@ -14,11 +14,11 @@ class University
       data_full <<
         {
         :id => row[0].to_i,
-        :domain => row[2].split(/[,;]/),
+        :domain => row[2].filtrate.my_split(/[,;]/),
         :UA => row[3],
         :EN => row[4],
         :URL => row[5],
-        :admin => row[6].split(/[,;]/)
+        :admin => row[6].filtrate.my_split(/[,;]/)
         }
       data_part << {
         :id => row[0].to_i,

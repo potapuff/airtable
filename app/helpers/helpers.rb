@@ -6,6 +6,15 @@ class String
   def has? str
     index(str) != nil
   end
+  
+  def filtrate
+     value = self.gsub('#N/A','').strip
+     value.empty? ? nil : value
+  end
+  
+  def my_split(regexp)
+    self.split(regexp)
+  end
 end
 
 class Array
@@ -34,6 +43,15 @@ class NilClass
   def has? str
     false
   end
+  
+  def filtrate
+    self
+  end
+  
+  def my_split(regexp)
+    []
+  end
+
 end
 
 module Sinatra

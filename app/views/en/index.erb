@@ -34,7 +34,12 @@
          <label for="f-url" class="form-label">
              Try to find <a href="https://registry.edbo.gov.ua" target="blank" style="text-decoration: underline;">here</a>
          </label>
-         <input type="url" class="form-control" id="f-url"  name="url" placeholder="https://registry.edbo.gov.ua/university/ххххх/" required>
+         <input type="url" class="form-control" id="f-url"  name="url"
+           placeholder="https://registry.edbo.gov.ua/university/ххххх"
+           value="https://registry.edbo.gov.ua/university/id-of-your-institition"
+           pattern="https://registry.edbo.gov.ua/university/(\d+)"
+           title="URL must look like https://registry.edbo.gov.ua/university/id-of-your-institition"
+          required>
        </div>
        <div class="mb-3">
          <label for="f-email" class="form-label">E-mail</label>
