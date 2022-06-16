@@ -14,6 +14,7 @@ class MoocApi < Sinatra::Application
     case (params.delete(:type))
       when 'program' then Program.append!(params)
       when 'bailee'  then Bailee.append!(params)
+      when 'zoom'    then Zoom.append!(params)
     else
       Demand.append!(params)
     end
@@ -22,9 +23,19 @@ class MoocApi < Sinatra::Application
   end
 
   get '/rector' do
+    @title = 'Шановні керівники закладів фахової передвищої та вищої освіти!'
+    @logo = 'logo.svg'
     @units = University.cached_all[:part]
     erb(:rector, layout: :rector_layout)
   end
+
+  get '/zoom' do
+    @title = 'Шановні керівники закладів фахової передвищої та вищої освіти! (Zoom)'
+    @logo = 'zoom.png'
+    @units = University.cached_all[:part]
+    erb(:zoom, layout: :rector_layout)
+  end
+
 
   get '/ping' do
     [200, (University.last_updated || 'never').to_s]

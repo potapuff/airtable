@@ -1,0 +1,187 @@
+<div class="edusearch">
+  <div class="edudescr">
+    <h1 class="edudescr_title">
+      Запит на інформацію щодо потреб закладу освіти в ліцензіях Zoom Meetings for Education  + additional option of Large Meeting up to 1,000 participants.
+    </h1>
+  </div>
+
+  <div class="edufinder">
+    <main>
+      <section class='container'>
+        <div class="row" style="--bs-gutter-x: 0;">
+          <select id="select" width="100%">
+            <option value=""></option>
+          </select>
+        </div>
+        <div id="result" class="pt-3"></div>
+      </section>
+
+    </main>
+  </div>
+
+</div>
+
+<script id="new-university" type="x-tmpl-mustache">
+    <p>
+      Ви не можете знайти свій заклад?  Тоді заповніть форму нижче.
+    </p>
+    <form action='/add' method="POST" >
+       <input type="hidden" name="UA" value="{{text}}">
+       <div class="mb-3">
+         <label for="f-url" class="form-label">
+             Спробуйте знайти <a href="https://registry.edbo.gov.ua" target="blank" style="text-decoration: underline;">тут</a>
+         </label>
+         <input type="url" class="form-control" id="f-url"  name="url" placeholder="https://registry.edbo.gov.ua/university/ххххх/" required>
+       </div>
+       <div class="mb-3">
+         <label for="f-email" class="form-label">E-mail</label>
+         <input type="email" class="form-control" id="f-email" name="email">
+       </div>
+       <div class="row mt-2">
+       <div class="col-sm-12 text-center">
+       <button type="submit" class="btn btn-primary">Надіслати запит</button>
+       <p>Нам знадобиться кілька днів, щоб додати заклад. </p>
+       </div></div>
+    </form>
+</script>
+
+<script>
+    function controls(state){
+        console.log(state);
+        if (state) {
+            $('.controls').show();
+            $('.controls input').prop('disabled',false);
+        } else {
+            $('.controls').hide();
+            $('.controls input').prop('disabled','disabled');
+        }
+    }
+</script>
+
+<script id="new-form" type="x-tmpl-mustache">
+  <form action="/add" method="POST" >
+    <input type="hidden" name="id" value="{{id}}">
+    <input type="hidden" name="value" value="{{text}}">
+    <input type="hidden" name="type" value="zoom">
+  <div class="row mt-2">
+  <label class="col-sm-2 col-form-label">Ваш email</label>
+  <div class="col-sm-10">
+    <input type="email" class="form-control" value="" name="email" required>
+  </div>
+  </div>
+  <div class="row mt-2 controls">
+    <p>
+    Чи є у вашого закладу освіти потреба в Zoom Meetings for Education  + additional option of Large Meeting up to 1,000 participants?
+    </p>
+  </div>
+  <div class="row mt-2">
+    <div class="col-sm-2 col-form-label">&nbsp;</div>
+    <div class="col-sm-10">
+    <p>
+      <input type="radio" id="v1" name='options' value='Так, маємо потребу' onchange="controls(true)">
+      <label for='v1'>Так, маємо потребу в 100+ учасниках та додаткових можливостях Zoom</label>
+    </p>
+    <p>
+      <input type="radio" id="v2" name='options' value='Ні, достатньо' onchange="controls(false)">
+      <label for='v2'>Ні, достатньо безкоштовної ліцензії Zoom</label>
+    </p>
+    <p>
+      <input type="radio" id="v3" name='options' value='Ні, інші сервіси' onchange="controls(false)">
+      <label for='v3'>Ні, ми застосовуємо інші сервіси, зокрема Meet в Google Workspace for Education (до 250 + запис)</label>
+    </p>
+    </div>
+  </div>
+  <div class="row mt-2 controls" style='display:none'>
+    <p>
+    Адміністратор (особа, відповідальна за впровадження онлайн-освіти у Вашому закладі):
+    </p>
+  </div>
+  <div class="row mt-2 controls" style='display:none'>
+  <label class="col-sm-2 col-form-label">ПІБ</label>
+  <div class="col-sm-10">
+    <input type="text" class="form-control" value="" name="name" required disabled='disabled'>
+  </div>
+  </div>
+  <div class="row mt-2 controls" style='display:none'>
+  <label class="col-sm-2 col-form-label">мобільний телефон</label>
+  <div class="col-sm-10">
+    <input type="tel" class="form-control" value="" name="tel" required disabled='disabled'>
+  </div>
+  </div>
+  <div class="row mt-2">
+  <div class="col-sm-12 text-center">
+    <button type="submit" class="btn btn-primary">Надіслати дані</button>
+  </div>
+  </div>
+  </form>
+</script>
+
+<script>
+    let data =<%= MultiJson.dump(@units) %>;
+    let select = $.map(data, function (obj) {
+        obj.text = obj.UA;
+        return obj;
+    });
+
+    function matchCustom(params, data) {
+        if ($.trim(params.term) === '') {
+            return data;
+        }
+
+        if (typeof data.text === 'undefined') {
+            return null;
+        }
+        let upper = params.term.toUpperCase();
+        if ((data.UA && data.UA.toUpperCase().indexOf(upper) > -1) ||
+          (data.EN && data.EN.toUpperCase().indexOf(upper) > -1)) {
+            let modifiedData = $.extend({}, data, true);
+            return modifiedData;
+        }
+
+        return null;
+    }
+
+    function render(template, data) {
+        let obj = document.getElementById(template).innerHTML;
+        return  Mustache.render(obj, data);
+    }
+
+    $(document).ready(function () {
+        $('#select').select2({
+            data: select,
+            placeholder: 'Оберіть Ваш навчальний заклад',
+            allowClear: true,
+            matcher: matchCustom,
+            tags: true
+        }).on('select2:select', function (e) {
+            let value = e.params.data;
+            let holder = document.getElementById('result');
+
+            holder.innerHTML = '';
+            if (value.id  === value.text) {
+                holder.innerHTML =  render('new-university', value);
+            }  else {
+                holder.innerHTML += render('new-form', value);
+            }
+            $(holder).find('form').on("submit", function(event) {
+                event.preventDefault();
+                let form = $(event.target);
+                let value = form.serialize();
+                form.html("Збереження...");
+                jQuery.ajax({
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: value,
+                    dataType: "html",
+                    encode: true
+                }).done(function( msg ) {
+                    $( form ).html( msg );
+                }).fail(function( jqXHR, textStatus ) {
+                    $( form ).html( textStatus  );
+                });
+            });
+        });
+
+    });
+
+</script>
