@@ -1,8 +1,14 @@
 ---
 logging: true
-show_exceptions: false
+show_exceptions: true
 run: false
 url: "https://example.com/"
-rollbar: 'YOUR_KEY'
-airtable_key: 'YOUR_KEY'
-airtable_base: 'YOUR_KEY'
+cache_ttl: 0
+rollbar:
+  server_token: 'token-for-server-side'
+database:
+  name: "UID of Google sheets (see: gist/*.rb)"
+  tables:
+    university: 'gid worksheet for data-source'
+    demand: "gid worksheet fro new university"
+    program: 'gid worksheet for new programs'

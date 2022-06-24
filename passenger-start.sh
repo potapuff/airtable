@@ -1,0 +1,1 @@
+passenger start  --port 4001 --environment production --daemonize  --pid-file tmp/pass.id  --max-pool-size 8 --min-instances 1  --max-requests 10000 --engine builtin

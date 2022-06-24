@@ -1,7 +1,7 @@
 require './app/models/demand.rb'
 
 class Zoom < Demand
-  KEYS = [:id, :value, :options, :name, :tel, :email]
+  KEYS = [:id, :value,:email, :options, :name, :tel, :admin, :count]
 
   def self.append!(params)
     result = KEYS.map { |key| params[key].sanitize }

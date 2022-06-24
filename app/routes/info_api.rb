@@ -30,7 +30,7 @@ class MoocApi < Sinatra::Application
   end
 
   get '/zoom' do
-    @title = 'Шановні керівники закладів фахової передвищої та вищої освіти! (Zoom)'
+    @title = 'Шановні керівники закладів освіти!'
     @logo = 'zoom.png'
     @units = University.cached_all[:part]
     erb(:zoom, layout: :rector_layout)

@@ -28,6 +28,9 @@ class MoocApi < Sinatra::Application
     Rollbar.configure do |config|
       config.access_token = settings.rollbar['server_token']
       config.disable_rack_monkey_patch = true
+      config.exception_level_filters.merge!({
+       'Sinatra::NotFound' => 'ignore',
+      })
     end
   end
 
@@ -51,7 +54,7 @@ class MoocApi < Sinatra::Application
   require './app/routes/info_api.rb'
 
   options "*" do
-    response.headers["Allow"] = "HEAD,GET,PUT,POST,DELETE,OPTIONS"
+    response.headers["Allow"] = "GET,POST"
     response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
     response.headers["Access-Control-Allow-Origin"] = settings.url
     200
@@ -60,10 +63,6 @@ class MoocApi < Sinatra::Application
   not_found do
     i18n_erb("404", layout: :main)
   end
-
-#  error Sinatra::NotFound do
-#    i18n_erb("404", layout: :main)
-#  end
 
   error do
     status 500

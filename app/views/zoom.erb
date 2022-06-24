@@ -78,22 +78,22 @@
     <div class="col-sm-2 col-form-label">&nbsp;</div>
     <div class="col-sm-10">
     <p>
-      <input type="radio" id="v1" name='options' value='Так, маємо потребу' onchange="controls(true)">
+      <input type="radio" id="v1" name='options' value='Так, маємо потребу' onchange="controls(true)" required>
       <label for='v1'>Так, маємо потребу в 100+ учасниках та додаткових можливостях Zoom</label>
     </p>
     <p>
-      <input type="radio" id="v2" name='options' value='Ні, достатньо' onchange="controls(false)">
+      <input type="radio" id="v2" name='options' value='Ні, достатньо' onchange="controls(false)" required>
       <label for='v2'>Ні, достатньо безкоштовної ліцензії Zoom</label>
     </p>
     <p>
-      <input type="radio" id="v3" name='options' value='Ні, інші сервіси' onchange="controls(false)">
+      <input type="radio" id="v3" name='options' value='Ні, інші сервіси' onchange="controls(false)" required>
       <label for='v3'>Ні, ми застосовуємо інші сервіси, зокрема Meet в Google Workspace for Education (до 250 + запис)</label>
     </p>
     </div>
   </div>
   <div class="row mt-2 controls" style='display:none'>
     <p>
-    Адміністратор (особа, відповідальна за впровадження онлайн-освіти у Вашому закладі):
+    Вкажіть особу в вашому закладі, що відповідатиме за розподіл ліцензій
     </p>
   </div>
   <div class="row mt-2 controls" style='display:none'>
@@ -103,9 +103,33 @@
   </div>
   </div>
   <div class="row mt-2 controls" style='display:none'>
+  <label class="col-sm-2 col-form-label">email</label>
+  <div class="col-sm-10">
+    <input type="email" class="form-control" value="" name="admin" required disabled='disabled'>
+  </div>
+  </div>
+  <div class="row mt-2 controls" style='display:none'>
   <label class="col-sm-2 col-form-label">мобільний телефон</label>
   <div class="col-sm-10">
     <input type="tel" class="form-control" value="" name="tel" required disabled='disabled'>
+  </div>
+  </div>
+  <div class="row mt-2 controls" style='display:none'>
+    <p>
+Скільки одночасних конференцій Zoom планує проводити ваш заклад освіти?
+    </p>
+  </div>
+  <div class="row mt-2 controls" style='display:none'>
+  <div class="col-sm-2"></div>
+  <div class="col-sm-10">
+   <p><i>З огляду на особливості планування занять та готовності співробітників застосовувати функціональні можливості Zoom для проведення вебінарів,  просимо проаналізувати та запропонувати мінімальну потребу в ліцензіях для вашого закладу освіти.</i></p>
+   <p><i>Кількість ліцензій визначає кількість одночасних/паралельних конференцій в заклад</i></p>
+  </div>
+  </div>
+  <div class="row mt-2 controls" style='display:none'>
+  <div class="col-sm-2">&nbsp;</div>
+  <div class="col-sm-10">
+    <input type="number" class="form-control" value="" name="count" min="0" max="1000" required disabled='disabled'>
   </div>
   </div>
   <div class="row mt-2">
@@ -113,6 +137,7 @@
     <button type="submit" class="btn btn-primary">Надіслати дані</button>
   </div>
   </div>
+
   </form>
 </script>
 
@@ -149,7 +174,7 @@
     $(document).ready(function () {
         $('#select').select2({
             data: select,
-            placeholder: 'Оберіть Ваш навчальний заклад',
+            placeholder: 'Оберіть Ваш заклад освіти',
             allowClear: true,
             matcher: matchCustom,
             tags: true
