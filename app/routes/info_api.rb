@@ -5,6 +5,11 @@ class MoocApi < Sinatra::Application
     i18n_erb(:index, layout: :main)
   end
 
+  get '/coursera' do
+    @units = University.cached_all[:part]
+    i18n_erb(:index, layout: :main)
+  end
+
   get '/:lang/:id' do
     units = University.cached_all[:full]
     json(units[params[:id].to_i] || {})
