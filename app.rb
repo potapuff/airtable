@@ -37,7 +37,7 @@ class MoocApi < Sinatra::Application
   %w{helpers models}.each {|dir| Dir.glob("./app/#{dir}/*.rb", &method(:require))}
 
   configure :production, :development do
-    [University, Demand, Program, Bailee, Zoom].each do |klass|
+    [University, Demand, Program, Bailee, Zoom, Zoom2].each do |klass|
       klass.database = settings.database["name"]
       klass.table_gid = settings.database["tables"][klass.to_s.downcase]
     end
@@ -67,6 +67,7 @@ class MoocApi < Sinatra::Application
   error do
     status 500
     e = env['sinatra.error']
+    Rollbar.error(e)
     if settings.show_exceptions
       "Application error\n#{e}\n#{e.backtrace.join("\n")}".gsub(/\n/, '<br />')
     else

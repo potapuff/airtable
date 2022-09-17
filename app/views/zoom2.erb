@@ -1,0 +1,181 @@
+<style>
+input::placeholder {
+  font-weight: bold;
+  color: red !important;
+}
+</style>
+<div class="edusearch">
+  <div class="edudescr">
+    <h1 class="edudescr_title">
+      &nbsp;
+    </h1>
+  </div>
+
+  <div class="edufinder">
+    <main>
+      <section class='container'>
+        <div class="row" style="--bs-gutter-x: 0;">
+          <select id="select" width="100%">
+            <option value=""></option>
+          </select>
+        </div>
+        <div id="result" class="pt-3"></div>
+      </section>
+
+    </main>
+  </div>
+
+</div>
+
+<script id="new-university" type="x-tmpl-mustache">
+    <p>
+      Ви не можете знайти свій заклад?  Тоді заповніть форму нижче.
+    </p>
+    <form action='/s/add' method="POST" >
+       <input type="hidden" name="UA" value="{{text}}">
+       <div class="mb-3">
+         <label for="f-url" class="form-label">
+             Спробуйте знайти <a href="https://registry.edbo.gov.ua" target="blank" style="text-decoration: underline;">тут</a>
+         </label>
+         <input type="url" class="form-control" id="f-url"  name="url" placeholder="https://registry.edbo.gov.ua/university/ххххх/" required>
+       </div>
+       <div class="mb-3">
+         <label for="f-email" class="form-label">E-mail</label>
+         <input type="email" class="form-control" id="f-email" name="email">
+       </div>
+       <div class="row mt-2">
+       <div class="col-sm-12 text-center">
+       <button type="submit" class="btn btn-primary">Надіслати запит</button>
+       <p>Нам знадобиться кілька днів, щоб додати заклад. </p>
+       </div></div>
+    </form>
+</script>
+
+<script id="new-form" type="x-tmpl-mustache">
+  <form action="/s/add" method="POST" >
+    <input type="hidden" name="id" value="{{id}}">
+    <input type="hidden" name="value" value="{{text}}">
+    <input type="hidden" name="type" value="zoom">
+  <div class="row mt-2">
+  <label class="col-sm-2 col-form-label">Ваш email</label>
+  <div class="col-sm-10">
+    <input type="email" class="form-control" value="" name="email" required>
+  </div>
+  </div>
+  <div class="row mt-2 controls" style=''>
+    <p>
+    Вкажіть особу в вашому закладі, що відповідатиме за розподіл ліцензій
+    </p>
+  </div>
+  <div class="row mt-2 controls" style=''>
+  <label class="col-sm-2 col-form-label">ПІБ</label>
+  <div class="col-sm-10">
+    <input type="text" class="form-control" value="" name="name" required >
+  </div>
+  </div>
+  <div class="row mt-2 controls" style=''>
+  <label class="col-sm-2 col-form-label">email</label>
+  <div class="col-sm-10">
+    <input type="email" class="form-control" value="" name="admin" required placeholder="Не повинен бути зареєстрованим у Zoom">
+  </div>
+  </div>
+  <div class="row mt-2 controls" style=''>
+  <label class="col-sm-2 col-form-label">мобільний телефон</label>
+  <div class="col-sm-10">
+    <input type="tel" class="form-control" value="" name="tel" required >
+  </div>
+  </div>
+
+  <div class="row mt-2 controls" style=''>
+  <label class="col-sm-2 col-form-label">Загальна кількість викладачів</label>
+  <div class="col-sm-10">
+    <input type="number" class="form-control" value="" name="tutor_count"  min="0" max="10000">
+  </div>
+  </div>
+
+  <div class="row mt-2 controls" style=''>
+  <label class="col-sm-2 col-form-label">Загальна кількість студентів</label>
+  <div class="col-sm-10">
+    <input type="number" class="form-control" value="" name="student_count" min="0" max="50000">
+  </div>
+  </div>
+
+
+  <div class="row mt-2">
+  <div class="col-sm-12 text-center">
+    <button type="submit" class="btn btn-primary">Надіслати дані</button>
+  </div>
+  </div>
+
+  </form>
+</script>
+
+<script>
+    let data =<%= MultiJson.dump(@units) %>;
+    let select = $.map(data, function (obj) {
+        obj.text = obj.UA;
+        return obj;
+    });
+
+    function matchCustom(params, data) {
+        if ($.trim(params.term) === '') {
+            return data;
+        }
+
+        if (typeof data.text === 'undefined') {
+            return null;
+        }
+        let upper = params.term.toUpperCase();
+        if ((data.UA && data.UA.toUpperCase().indexOf(upper) > -1) ||
+          (data.EN && data.EN.toUpperCase().indexOf(upper) > -1)) {
+            let modifiedData = $.extend({}, data, true);
+            return modifiedData;
+        }
+
+        return null;
+    }
+
+    function render(template, data) {
+        let obj = document.getElementById(template).innerHTML;
+        return  Mustache.render(obj, data);
+    }
+
+    $(document).ready(function () {
+        $('#select').select2({
+            data: select,
+            placeholder: 'Оберіть Ваш заклад освіти',
+            allowClear: true,
+            matcher: matchCustom,
+            tags: true
+        }).on('select2:select', function (e) {
+            let value = e.params.data;
+            let holder = document.getElementById('result');
+
+            holder.innerHTML = '';
+            if (value.id  === value.text) {
+                holder.innerHTML =  render('new-university', value);
+            }  else {
+                holder.innerHTML += render('new-form', value);
+            }
+            $(holder).find('form').on("submit", function(event) {
+                event.preventDefault();
+                let form = $(event.target);
+                let value = form.serialize();
+                form.html("Збереження...");
+                jQuery.ajax({
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: value,
+                    dataType: "html",
+                    encode: true
+                }).done(function( msg ) {
+                    $( form ).html( msg );
+                }).fail(function( jqXHR, textStatus ) {
+                    $( form ).html( textStatus  );
+                });
+            });
+        });
+
+    });
+
+</script>

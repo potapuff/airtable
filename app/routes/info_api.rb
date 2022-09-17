@@ -24,17 +24,10 @@ class MoocApi < Sinatra::Application
   end
 
   get '/zoom2' do
-    @title = 'Шановні керівники закладів освіти!'
+    @title = 'Запит додаткової інформації від закладів освіти для розподілу ліцензій Zoom'
     @logo = 'zoom.png'
     @units = University.cached_all[:part]
-    erb(:zoom, layout: :rector_layout)
-  end
-
-  get '/zoom3' do
-    @title = 'Шановні керівники закладів освіти!'
-    @logo = 'zoom.png'
-    @units = University.cached_all[:part]
-    erb(:zoom, layout: :rector_layout)
+    erb(:zoom2, layout: :rector_layout)
   end
 
   get '/s/:lang/:id' do
@@ -43,6 +36,7 @@ class MoocApi < Sinatra::Application
   end
 
   post '/s/add' do
+    puts params.inspect
     case (params.delete(:type))
       when 'program' then Program.append!(params)
       when 'bailee'  then Bailee.append!(params)
@@ -67,7 +61,11 @@ class MoocApi < Sinatra::Application
   if MoocApi.settings.cache_ttl.to_i > 0
   Thread.new do
     while true do
-      University.cached_all(true)
+      begin
+        University.cached_all(true)
+      rescue StandardError => error
+        Rollbar.error(error)
+      end
       sleep MoocApi.settings.cache_ttl.to_i*3/4
     end
   end
