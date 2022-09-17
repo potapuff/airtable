@@ -28,7 +28,7 @@
     <p>
       Can't find your institution? Then fill out the form below.
     </p>
-    <form action='/add' method="POST">
+    <form action='/s/add' method="POST">
        <input type="hidden" name="EN" value="{{text}}">
        <div class="mb-3">
          <label for="f-url" class="form-label">
@@ -58,7 +58,7 @@
   <p>
      Unfortunately, the program for your institution has not yet been created
   </p>
-  <form action="/add" method="POST">
+  <form action="/s/add" method="POST">
     <input type="hidden" class="form-control" name="EN" value="{{EN}}">
     <input type="hidden" class="form-control" name="UA" value="{{UA}}">
     <input type="hidden" class="form-control" name="id" value="{{id}}">
@@ -219,7 +219,7 @@
                 result.innerHTML = 'Loading...';
                 $.ajax({
                     type: "get",
-                    url: '/en/' + value.id,
+                    url: '/s/en/' + value.id,
                     dataType: "json",
                     encode: true
                 }).done(function (msg) {

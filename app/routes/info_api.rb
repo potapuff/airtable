@@ -1,30 +1,12 @@
 class MoocApi < Sinatra::Application
 
   get '/' do
-    @units = University.cached_all[:part]
-    i18n_erb(:index, layout: :main)
+    redirect '/coursera'
   end
 
   get '/coursera' do
     @units = University.cached_all[:part]
     i18n_erb(:index, layout: :main)
-  end
-
-  get '/:lang/:id' do
-    units = University.cached_all[:full]
-    json(units[params[:id].to_i] || {})
-  end
-
-  post '/add' do
-    case (params.delete(:type))
-      when 'program' then Program.append!(params)
-      when 'bailee'  then Bailee.append!(params)
-      when 'zoom'    then Zoom.append!(params)
-    else
-      Demand.append!(params)
-    end
-
-    i18n_erb(:greetings, layout: request.xhr? ? nil : :main)
   end
 
   get '/rector' do
@@ -41,12 +23,42 @@ class MoocApi < Sinatra::Application
     erb(:zoom, layout: :rector_layout)
   end
 
+  get '/zoom2' do
+    @title = 'Шановні керівники закладів освіти!'
+    @logo = 'zoom.png'
+    @units = University.cached_all[:part]
+    erb(:zoom, layout: :rector_layout)
+  end
 
-  get '/ping' do
+  get '/zoom3' do
+    @title = 'Шановні керівники закладів освіти!'
+    @logo = 'zoom.png'
+    @units = University.cached_all[:part]
+    erb(:zoom, layout: :rector_layout)
+  end
+
+  get '/s/:lang/:id' do
+    units = University.cached_all[:full]
+    json(units[params[:id].to_i] || {})
+  end
+
+  post '/s/add' do
+    case (params.delete(:type))
+      when 'program' then Program.append!(params)
+      when 'bailee'  then Bailee.append!(params)
+      when 'zoom'    then Zoom.append!(params)
+    else
+      Demand.append!(params)
+    end
+
+    i18n_erb(:greetings, layout: request.xhr? ? nil : :main)
+  end
+
+  get '/s/ping' do
     [200, (University.last_updated || 'never').to_s]
   end
 
-  get '/reset' do
+  get '/s/reset' do
     University.reset_cache
     redirect '/'
   end

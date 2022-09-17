@@ -25,7 +25,7 @@
     <p>
       Ви не можете знайти свій заклад?  Тоді заповніть форму нижче.
     </p>
-    <form action='/add' method="POST" >
+    <form action='/s/add' method="POST" >
        <input type="hidden" name="UA" value="{{text}}">
        <div class="mb-3">
          <label for="f-url" class="form-label">
@@ -59,7 +59,7 @@
 </script>
 
 <script id="new-form" type="x-tmpl-mustache">
-  <form action="/add" method="POST" >
+  <form action="/s/add" method="POST" >
     <input type="hidden" name="id" value="{{id}}">
     <input type="hidden" name="value" value="{{text}}">
     <input type="hidden" name="type" value="zoom">

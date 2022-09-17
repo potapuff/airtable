@@ -27,7 +27,7 @@
     <p>
       Ви не можете знайти свій заклад?  Тоді заповніть форму нижче.
     </p>
-    <form action='/add' method="POST">
+    <form action='/s/add' method="POST">
        <input type="hidden" name="UA" value="{{text}}">
        <div class="mb-3">
          <label for="f-url" class="form-label">
@@ -57,7 +57,7 @@
   <p>
      На жаль, програма для вашого закладу ще не створена
   </p>
-  <form action="/add" method="POST">
+  <form action="/s/add" method="POST">
     <input type="hidden" class="form-control" name="UA" value="{{UA}}">
     <input type="hidden" class="form-control" name="EN" value="{{EN}}">
     <input type="hidden" class="form-control" name="id" value="{{id}}">
@@ -219,7 +219,7 @@
                 result.innerHTML = 'Хвилинку...';
                 $.ajax({
                     type: "get",
-                    url: '/uk/' + value.id,
+                    url: '/s/uk/' + value.id,
                     dataType: "json",
                     encode: true
                 }).done(function (msg) {
