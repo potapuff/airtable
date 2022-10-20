@@ -1,3 +1,10 @@
+<style>
+input::placeholder {
+  font-weight: bold;
+  color: red !important;
+}
+</style>
+
 <div class="edusearch">
   <div class="edudescr">
     <h1 class="edudescr_title">
@@ -105,33 +112,38 @@
   <div class="row mt-2 controls" style='display:none'>
   <label class="col-sm-2 col-form-label">email</label>
   <div class="col-sm-10">
-    <input type="email" class="form-control" value="" name="admin" required disabled='disabled'>
+    <input type="email" class="form-control" value="" name="admin" required disabled='disabled' placeholder="Не повинен бути зареєстрованим у Zoom">
   </div>
   </div>
+
   <div class="row mt-2 controls" style='display:none'>
   <label class="col-sm-2 col-form-label">мобільний телефон</label>
   <div class="col-sm-10">
     <input type="tel" class="form-control" value="" name="tel" required disabled='disabled'>
   </div>
   </div>
+
+
   <div class="row mt-2 controls" style='display:none'>
-    <p>
-Скільки одночасних конференцій Zoom планує проводити ваш заклад освіти?
-    </p>
+    <label class="col-sm-2 col-form-label">Кількість ліцензій</label>
+    <div class="col-sm-10">
+      <input type="number" class="form-control" value="" name="count" min="0" max="1000" required disabled='disabled'>
+    </div>
+  </div>
+  
+  <div class="row mt-2 controls" style='display:none'>
+    <label class="col-sm-2 col-form-label">Загальна кількість викладачів</label>
+    <div class="col-sm-10">
+      <input type="number" class="form-control" value="" name="tutor_count"  min="0" max="10000"  required disabled='disabled'>
+    </div>
   </div>
   <div class="row mt-2 controls" style='display:none'>
-  <div class="col-sm-2"></div>
-  <div class="col-sm-10">
-   <p><i>З огляду на особливості планування занять та готовності співробітників застосовувати функціональні можливості Zoom для проведення вебінарів,  просимо проаналізувати та запропонувати мінімальну потребу в ліцензіях для вашого закладу освіти.</i></p>
-   <p><i>Кількість ліцензій визначає кількість одночасних/паралельних конференцій в заклад</i></p>
+    <label class="col-sm-2 col-form-label">Загальна кількість студентів</label>
+    <div class="col-sm-10">
+      <input type="number" class="form-control" value="" name="student_count" min="0" max="50000"  required disabled='disabled'>
+    </div>
   </div>
-  </div>
-  <div class="row mt-2 controls" style='display:none'>
-  <div class="col-sm-2">&nbsp;</div>
-  <div class="col-sm-10">
-    <input type="number" class="form-control" value="" name="count" min="0" max="1000" required disabled='disabled'>
-  </div>
-  </div>
+
   <div class="row mt-2">
   <div class="col-sm-12 text-center">
     <button type="submit" class="btn btn-primary">Надіслати дані</button>

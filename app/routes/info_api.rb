@@ -30,6 +30,13 @@ class MoocApi < Sinatra::Application
     erb(:zoom2, layout: :rector_layout)
   end
 
+  get '/zoom3' do
+    @title = 'Запит додаткової інформації від закладів освіти для розподілу ліцензій Zoom'
+    @logo = 'zoom.png'
+    @units = University.cached_all[:part]
+    erb(:zoom3, layout: :rector_layout)
+  end
+
   get '/s/:lang/:id' do
     units = University.cached_all[:full]
     json(units[params[:id].to_i] || {})
