@@ -1,8 +1,7 @@
 <div class="edusearch">
   <div class="edudescr">
     <h1 class="edudescr_title">
-      У полі нижче оберіть свій вищий заклад освіти, щоб дізнатися посилання для доступу до безкоштовної програми з
-      більш ніж 6000 курсів від провідних університетів і партнерів Coursera!
+      У полі нижче оберіть свій вищий заклад освіти, щоб дізнатися як приєднатися до безкоштовної програми Udemy!
     </h1>
   </div>
 
@@ -52,41 +51,9 @@
     </form>
 </script>
 
-
-<script id="new-program" type="x-tmpl-mustache">
-  <p>
-     На жаль, програма для вашого закладу ще не створена
-  </p>
-  <form action="/s/add" method="POST">
-    <input type="hidden" class="form-control" name="UA" value="{{UA}}">
-    <input type="hidden" class="form-control" name="EN" value="{{EN}}">
-    <input type="hidden" class="form-control" name="id" value="{{id}}">
-    <input type="hidden" class="form-control" name="type" value="program">
-  <div class="row mt-2">
-  <label class="col-sm-2 col-form-label">Email</label>
-  <div class="col-sm-10">
-    <input type="email" class="form-control" value="" name="email" required>
-  </div>
-  </div>
-  <div class="row mt-2">
-  <div class="col-sm-12 text-center">
-    <button type="submit" class="btn btn-primary">Надіслати запит</button>
-    <p>Нам знадобиться до двох днів, щоб додати програму.</p>
-  </div>
-  </div>
-  </form>
-</script>
-
 <script id="ok" type="x-tmpl-mustache">
   <div class="row mt-2">
   <ul>
-    <li>Реєстрація на цю програму можлива з корпоративних email в домені
-      <ul class='inline-ul'>
-        {{#domain}}
-         <li>ХХХХХХХХ@xxx.{{.}}</li>
-        {{/domain}}
-      </ul>
-    </li>
     <li>Реєстрація на цю програму можлива за запрошенням адміністратора вашого закладу. Зверніться до
       <ul class='inline-ul'>
         {{#admin}}
@@ -103,43 +70,6 @@
   </div>
 </script>
 
-
-<script id="domain-only" type="x-tmpl-mustache">
-  <div class="row mt-2">
-  <ul>
-    <li>Реєстрація на цю програму можлива з корпоративних email в домені
-      <ul class='inline-ul'>
-        {{#domain}}
-          <li>ХХХХХХХХ@xxx.{{.}}</li>
-        {{/domain}}
-      </ul>
-    </li>
-  </ul>
-  </div>
-  <div class="row mt-2">
-    <div class="col-sm-12 text-center">
-     <a class="btn btn-primary" href='{{URL}}'>Перейти</a>
-    </div>
-  </div>
-</script>
-
-<script id="admin-only" type="x-tmpl-mustache">
-  <div class="row mt-2">
-    <li>Реєстрaція на цю програму можлива за запрошенням адміністратора вашого закладу. Зверніться до
-      <ul class='inline-ul'>
-        {{#admin}}
-         <li>{{.}}</li>
-        {{/admin}}
-      </ul>
-    </li>
-  </ul>
-  </div>
-  <div class="row mt-2">
-    <div class="col-sm-12 text-center">
-     <a class="btn btn-primary" href='{{URL}}'>Перейти</a>
-    </div>
-  </div>
-</script>
 
 <script id="no-all" type="x-tmpl-mustache">
   <div class="row mt-2">
@@ -185,20 +115,8 @@
     }
 
     function process(value){
-        let has_url = value.URL && value.URL.indexOf("http") !== -1;
         let has_admin = value.admin.length > 0;
-        let has_domain = value.domain.length > 0;
-        let variant = 'ok';
-        if (!has_url) {
-            //There is UNI but no URL
-            variant = 'new-program'
-        } else {
-            if (has_admin) {
-                variant = has_domain ? 'ok' : 'admin-only'
-            } else {
-                variant = has_domain ? 'domain-only' : 'no-all'
-            }
-        }
+        let variant = has_admin? 'ok' : 'no-all';
         return render(variant, value);
     }
 
@@ -219,7 +137,7 @@
                 result.innerHTML = 'Хвилинку...';
                 $.ajax({
                     type: "get",
-                    url: '/s/uk/' + value.id,
+                    url: '/s/udemy/' + value.id,
                     dataType: "json",
                     encode: true
                 }).done(function (msg) {

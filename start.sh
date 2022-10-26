@@ -1,1 +1,1 @@
-thin -O -e production -s 2  -S tmp/thin.mooc.sock -d start
+thin -O -e production -s 1  -S tmp/thin.mooc.sock -d start

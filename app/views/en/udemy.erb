@@ -1,0 +1,147 @@
+<div class="edusearch">
+  <div class="edudescr">
+    <h1 class="edudescr_title">
+      In the box below, select your higher education institution to find the link to access the free program from Udemy!
+    </h1>
+  </div>
+
+
+  <div class="edufinder">
+    <main>
+      <section class='container'>
+        <div class="row" style="--bs-gutter-x: 0;">
+          <select id="select" width="100%">
+            <option value=""></option>
+          </select>
+        </div>
+        <div id="result" class="pt-3"></div>
+      </section>
+
+    </main>
+  </div>
+
+</div>
+
+<script id="new-university" type="x-tmpl-mustache">
+    <p>
+      Can't find your institution? Then fill out the form below.
+    </p>
+    <form action='/s/add' method="POST">
+       <input type="hidden" name="EN" value="{{text}}">
+       <div class="mb-3">
+         <label for="f-url" class="form-label">
+             Try to find <a href="https://registry.edbo.gov.ua" target="blank" style="text-decoration: underline;">here</a>
+         </label>
+         <input type="url" class="form-control" id="f-url"  name="url"
+           placeholder="https://registry.edbo.gov.ua/university/ххххх"
+           value="https://registry.edbo.gov.ua/university/id-of-your-institition"
+           pattern="https://registry.edbo.gov.ua/university/(\d+)"
+           title="URL must look like https://registry.edbo.gov.ua/university/id-of-your-institition"
+          required>
+       </div>
+       <div class="mb-3">
+         <label for="f-email" class="form-label">E-mail</label>
+         <input type="email" class="form-control" id="f-email" name="email">
+       </div>
+       <div class="row mt-2">
+       <div class="col-sm-12 text-center">
+       <button type="submit" class="btn btn-primary">Send request</button>
+       <p>It will take us a few days to add the institution.</p>
+       </div></div>
+    </form>
+</script>
+
+<script id="ok" type="x-tmpl-mustache">
+  <div class="row mt-2">
+  <ul>
+    <li>Registration for this program is possible at the invitation of the administrator of your institution. You can mail to       <ul class='inline-ul'>
+        {{#admin}}
+         <li>{{.}}</li>
+        {{/admin}}
+      </ul></li>
+  </ul>
+  </div>
+  <div class="row mt-2">
+    <div class="col-sm-12 text-center">
+     <a class="btn btn-primary" href='{{URL}}'>Go to site</a>
+    </div>
+  </div>
+</script>
+
+<script id="no-all" type="x-tmpl-mustache">
+  <div class="row mt-2">
+     <p color='red'>An administrator has not yet been assigned to this program, please contact the administration of your institution.</p>
+     <p>The educational institution must determine the responsible person and submit a request to the Ministry of Education and Science of Ukraine.</p>
+  </ul>
+  </div>
+  <div class="row mt-2">
+    <div class="col-sm-12 text-center">
+     <a class="btn btn-primary" href='{{URL}}'>Go to site</a>
+    </div>
+  </div>
+</script>
+
+<script>
+    let data =<%= MultiJson.dump(@units) %>;
+    let select = $.map(data, function (obj) {
+        obj.text = !!obj.EN ? obj.EN : obj.UA;
+        return obj;
+    });
+
+    function matchCustom(params, data) {
+        if ($.trim(params.term) === '') {
+            return data;
+        }
+
+        if (typeof data.text === 'undefined') {
+            return null;
+        }
+        let upper = params.term.toUpperCase();
+        if ((data.UA && data.UA.toUpperCase().indexOf(upper) > -1) ||
+          (data.EN && data.EN.toUpperCase().indexOf(upper) > -1)) {
+            let modifiedData = $.extend({}, data, true);
+            return modifiedData;
+        }
+
+        return null;
+    }
+
+    function render(template, data) {
+        let obj = document.getElementById(template).innerHTML;
+        return  Mustache.render(obj, data);
+    }
+
+    function process(value){
+        let has_admin = value.admin.length > 0;
+        let variant = has_admin ?  'ok' : 'no-all';
+        return render(variant, value);
+    }
+
+    $(document).ready(function () {
+        $('#select').select2({
+            data: select,
+            placeholder: 'Choose your institution',
+            allowClear: true,
+            matcher: matchCustom,
+            tags: true
+        }).on('select2:select', function (e) {
+            let value = e.params.data;
+            let result = document.getElementById('result');
+            console.log(value);
+            if (value.id  === value.text) {
+                result.innerHTML  = render('new-university', value);
+            } else {
+                result.innerHTML = 'Loading...';
+                $.ajax({
+                    type: "get",
+                    url: '/s/udemy/' + value.id,
+                    dataType: "json",
+                    encode: true
+                }).done(function (msg) {
+                    $('#result').html(process(msg));
+                }).fail(function (jqXHR, textStatus) {
+                    $('#result').html(textStatus);
+                });
+            };
+        })});
+</script>

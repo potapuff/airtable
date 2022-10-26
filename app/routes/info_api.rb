@@ -6,7 +6,26 @@ class MoocApi < Sinatra::Application
 
   get '/coursera' do
     @units = University.cached_all[:part]
-    i18n_erb(:index, layout: :main)
+    @logo_img = 'coursera.svg'
+    i18n_erb(:coursera, layout: :main)
+  end
+
+  get '/s/coursera/:id' do
+    units = University.cached_all[:full]
+    json(units[params[:id].to_i] || {})
+  end
+
+  get '/f/udemy' do
+    @units = University.cached_all[:part]
+    @logo_img = 'udemy.svg'
+    i18n_erb(:udemy, layout: :main)
+  end
+
+  get '/s/udemy/:id' do
+    units = UdemyAdmin.cached_all[:full]
+    data = units[params[:id].to_i] || {}
+    data[:URL] = 'https://ua.udemy.com'
+    json(data)
   end
 
   get '/rector' do
@@ -37,9 +56,14 @@ class MoocApi < Sinatra::Application
     erb(:zoom3, layout: :rector_layout)
   end
 
-  get '/s/:lang/:id' do
-    units = University.cached_all[:full]
-    json(units[params[:id].to_i] || {})
+
+  get '/s/udemy/:id' do
+    units = UdemyAdmin.cached_all[:full]
+    data = units[params[:id].to_i] || {}
+    unless data.keys.empty?
+      data[:URL] = 'https://ua.udemy.com'
+    end
+    json(data)
   end
 
   post '/s/add' do
@@ -61,6 +85,7 @@ class MoocApi < Sinatra::Application
 
   get '/s/reset' do
     University.reset_cache
+    UdemyAdmin.reset_cache
     redirect '/'
   end
 
@@ -68,14 +93,34 @@ class MoocApi < Sinatra::Application
   if MoocApi.settings.cache_ttl.to_i > 0
   Thread.new do
     while true do
+      puts 'start University update'
+      interval = MoocApi.settings.cache_ttl.to_i
       begin
         University.cached_all(true)
       rescue StandardError => error
+        puts 'University update filed'
         Rollbar.error(error)
+        interval = [30, MoocApi.settings.cache_ttl.to_i/4].min
       end
-      sleep MoocApi.settings.cache_ttl.to_i*3/4
+      sleep interval
     end
   end
+  sleep 3
+  Thread.new do
+    while true do
+      puts 'start UdemyAdmin update'
+      interval = MoocApi.settings.cache_ttl.to_i
+      begin
+        UdemyAdmin.cached_all(true)
+      rescue StandardError => error
+        puts 'Udemy update failed'
+        Rollbar.error(error)
+        interval = [30, MoocApi.settings.cache_ttl.to_i/4].min
+      end
+      sleep interval
+    end
+  end
+  
   else
     puts 'Cache disabled. Set cache_ttl (in seconds) to enable.'
   end
