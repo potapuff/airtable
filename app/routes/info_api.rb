@@ -5,6 +5,7 @@ class MoocApi < Sinatra::Application
   end
 
   get '/coursera' do
+    @page_title = 'Coursera for Ukraine'
     @units = University.cached_all[:part]
     @logo_img = 'coursera.svg'
     i18n_erb(:coursera, layout: :main)
@@ -16,6 +17,7 @@ class MoocApi < Sinatra::Application
   end
 
   get '/f/udemy' do
+    @page_title = 'Udemy for Ukraine'
     @units = University.cached_all[:part]
     @logo_img = 'udemy.svg'
     i18n_erb(:udemy, layout: :main)
@@ -36,6 +38,7 @@ class MoocApi < Sinatra::Application
   end
 
   get '/zoom' do
+    @page_title = 'zoom'
     @title = 'Шановні керівники закладів освіти!'
     @logo = 'zoom.png'
     @units = University.cached_all[:part]
@@ -43,6 +46,7 @@ class MoocApi < Sinatra::Application
   end
 
   get '/zoom2' do
+    @page_title = 'Zoom - 2'
     @title = 'Запит додаткової інформації від закладів освіти для розподілу ліцензій Zoom'
     @logo = 'zoom.png'
     @units = University.cached_all[:part]
@@ -50,6 +54,7 @@ class MoocApi < Sinatra::Application
   end
 
   get '/zoom3' do
+    @page_title = 'Zoom - 3'
     @title = 'Запит додаткової інформації від закладів освіти для розподілу ліцензій Zoom'
     @logo = 'zoom.png'
     @units = University.cached_all[:part]
@@ -68,14 +73,15 @@ class MoocApi < Sinatra::Application
 
   post '/s/add' do
     puts params.inspect
-    case (params.delete(:type))
+    result = case (params.delete(:type))
       when 'program' then Program.append!(params)
       when 'bailee'  then Bailee.append!(params)
       when 'zoom'    then Zoom.append!(params)
+      when 'zoom2'    then Zoom2.append!(params)
     else
       Demand.append!(params)
     end
-
+    puts result
     i18n_erb(:greetings, layout: request.xhr? ? nil : :main)
   end
 
@@ -93,7 +99,7 @@ class MoocApi < Sinatra::Application
   if MoocApi.settings.cache_ttl.to_i > 0
   Thread.new do
     while true do
-      puts 'start University update'
+      #puts 'start University update'
       interval = MoocApi.settings.cache_ttl.to_i
       begin
         University.cached_all(true)
@@ -108,7 +114,7 @@ class MoocApi < Sinatra::Application
   sleep 3
   Thread.new do
     while true do
-      puts 'start UdemyAdmin update'
+      #puts 'start UdemyAdmin update'
       interval = MoocApi.settings.cache_ttl.to_i
       begin
         UdemyAdmin.cached_all(true)
