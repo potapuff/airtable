@@ -53,7 +53,7 @@ header {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    min-height: 144px;}
+    }
 
 .edudescr h1 {
     max-width: 540px;
@@ -218,51 +218,52 @@ input.form-control {
    } 
 }
 
-@media screen and (min-width:320px) and (max-width:470px){
-   header{
+@media screen and (min-width:320px) and (max-width:470px) {
+    header {
 
-     margin-bottom:35%;
-   }
-   
-   .header_inner img{
-     height: 97%;
-     width: 97%;
-   }
-   
-  .header_content{
-     margin-top: 10%;
-     margin-bottom: 75px;
-   }
-  .header_content h1{
-     width: 270px;
-     margin-top: 8%;
-     font-size: 33px
-   }
+        margin-bottom: 35%;
+    }
 
-  .edudescr_title{
-     width: 310px;
-     font-size: 14px;
-     margin: 0 auto;
-    
-    
-   }
-.edudescr{
-  min-height: 144px;
-  margin-bottom: 35px;}
+    .header_inner img {
+        height: 97%;
+        width: 97%;
+    }
+
+    .header_content {
+        margin-top: 10%;
+        margin-bottom: 75px;
+    }
+
+    .header_content h1 {
+        width: 270px;
+        margin-top: 8%;
+        font-size: 33px
+    }
+
+    .edudescr_title {
+        width: 310px;
+        font-size: 14px;
+        margin: 0 auto;
+
+
+    }
+
+    .edudescr {
+        min-height: 144px;
+        margin-bottom: 35px;
+    }
+
+
+    footer {
+        justify-content: center;
+    }
+
+    .footer_inner {
+        max-width: 306px;
+        margin: 0 auto;
+        justify-content: center;
+    }
 }
-  
-
-  footer{
-     justify-content: center;
-   }
-
-  .footer_inner{
-      max-width: 306px;
-      margin: 0 auto;
-      justify-content: center;
-     }
-}
-
 @media screen and (min-width:471px) and (max-width:599px){
     .header_content{
        width:390px;

@@ -115,7 +115,7 @@
     }
 
     function process(value){
-        let has_admin = value.admin.length > 0;
+        let has_admin = value.admin;
         let variant = has_admin? 'ok' : 'no-all';
         return render(variant, value);
     }

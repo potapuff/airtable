@@ -37,7 +37,9 @@ class MoocApi < Sinatra::Application
   %w{helpers models}.each {|dir| Dir.glob("./app/#{dir}/*.rb", &method(:require))}
 
   configure :production, :development do
-    [University, UdemyAdmin, Demand, Program, Bailee, Zoom, Zoom2].each do |klass|
+    [University, UdemyAdmin, Demand, Program,
+     Bailee, Zoom, Zoom2,
+     ZoomLicenseAvailable, ZoomLicenseRequest].each do |klass|
       klass.database = settings.database["name"]
       klass.table_gid = settings.database["tables"][klass.to_s.downcase]
     end
