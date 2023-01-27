@@ -78,7 +78,7 @@ class MoocApi < Sinatra::Application
 
 
   get '/s/udemy/:id' do
-    units = UdemyAdmin.cached_all()[:full]
+    units = UdemyAdmin.cached_all[:full]
     data = units[params[:id].to_i] || {}
     unless data.keys.empty?
       data[:URL] = 'https://ua.udemy.com'
