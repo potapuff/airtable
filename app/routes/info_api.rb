@@ -65,7 +65,8 @@ class MoocApi < Sinatra::Application
     @page_title = 'Zoom, запит ліцензій'
     @title = 'Запит на отримання ліцензій Zoom'
     @logo = 'zoom.png'
-    @units = University.cached_all()[:part]
+    ids = ZoomLicenseAvailable.cached_all()[:data].map{|x| x[:id]}
+    @units = University.cached_all()[:part].select{|x| ids.include? x[:id]}
     erb(:zoomlicense, layout: :rector_layout)
   end
 

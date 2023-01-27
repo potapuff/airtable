@@ -84,7 +84,7 @@ input::placeholder {
   <h2>Є вільні ліцензії для розподілу</h2>
   <p> Для отримання ліцензії Zoom зверніться до вашого адміністратора
         {{#domain}}
-          <kbd class='mr-1'>{{.}}</kbd>
+          <span class='mr-1'><a href="mailto:{{.}}">{{.}}</span>
         {{/domain}}
   </p>
   </div>
@@ -94,7 +94,7 @@ input::placeholder {
   <div class="row mt-2">
   <p>На жаль, <strong>всі ліцензії розподілено</strong>. Але ви можете звернутись до вашого адміністратора
         {{#domain}}
-          <kbd class='mr-1'>{{.}}</kbd>
+          <span class='mr-1'><a href="mailto:{{.}}">{{.}}</span>
         {{/domain}}
   </p>
   </div>
