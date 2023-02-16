@@ -20,7 +20,9 @@ input::placeholder {
             <option value=""></option>
           </select>
         </div>
-        <div id="result" class="pt-3"></div>
+        <div id="result" class="pt-3">
+          <span>Не знайшли свій заклад? Введіть його назву та натисніть enter</span>
+        </div>
       </section>
 
     </main>
@@ -56,7 +58,7 @@ input::placeholder {
        </div>
        <div class="mb-3">
          <label for="f-link" class="form-label">
-             Посилання на сторінку чи ресурс, що може підтвердити вашу належність до закладу освіти (розклад занять, перелік співробітників тощо…)
+             Посилання на сторінку, що може підтвердити вашу належність до закладу освіти. На вказаній  сторінці <b>має бути ваше прізвище та ім'я</b> (розклад занять, перелік співробітників закладу тощо…)
          </label>
          <input type="url" class="form-control" id="f-link"  name="link" placeholder="https://..." required>
        </div>
@@ -166,10 +168,11 @@ input::placeholder {
     $(document).ready(function () {
         $('#select').select2({
             data: select,
-            placeholder: 'Оберіть Ваш заклад освіти',
+            placeholder: 'Введіть або оберіть Ваш заклад освіти',
             allowClear: true,
             matcher: matchCustom,
-            tags: true
+            tags: true,
+            language: { noResults: () => "Заклад не знайдено. При заповненні форми треба буде ввести додаткові данні."}
         }).on('select2:select', function (e) {
             let value = e.params.data;
             let result = document.getElementById('result');
