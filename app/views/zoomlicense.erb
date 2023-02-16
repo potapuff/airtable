@@ -71,7 +71,10 @@ input::placeholder {
            name="url"
             placeholder="https://registry.edbo.gov.ua/university/ххххх/"
             value='{{url}}'
-             required>
+            pattern='.*((registry\.edbo\.gov\.ua)|(isuo\.org))\/[\/a-z]{1,}\d+.*'
+            oninvalid="this.setCustomValidity('Це обов\'язкове поле. Вкажіть ТОЧНЕ посилання на Ваш заклад registry.edbo.gov.ua чи isuo.org')"
+            oninput="this.setCustomValidity('')"
+            required>
        </div>
        <div class="row mt-2">
        <div class="col-sm-12 text-center">
