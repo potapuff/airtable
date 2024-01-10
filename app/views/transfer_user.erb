@@ -1,0 +1,205 @@
+<style>
+input::placeholder {
+  font-weight: bold;
+  color: red !important;
+}
+</style>
+
+<div class="edusearch">
+  <div class="edudescr">
+    <h1 class="edudescr_title">
+      &nbsp;
+    </h1>
+  </div>
+
+  <div class="edufinder">
+    <main>
+      <section class='container'>
+        <div class="row" style="--bs-gutter-x: 0;">
+          <select id="select" width="100%">
+            <option value=""></option>
+          </select>
+        </div>
+        <div id="result" class="pt-3">
+          <span>Не знайшли свій заклад? Введіть його назву та натисніть enter</span>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+</div>
+
+<script id="new" type="x-tmpl-mustache">
+    <p>
+      Для отримання ліцензії заповніть форму.
+    </p>
+    <form action='/s/add' method="POST" >
+       <input type="hidden" class="form-control" name="type" value="zoom-license">
+       <div class="row">
+         <div class='col'>
+         <label for="f-fname" class="form-label">
+             Ваше ім’я
+         </label>
+         <input type="text" class="form-control" id="f-fname"  name="fname" placeholder="Ім'я" required>
+         </div>
+         <div class='col'>
+         <label for="f-sname" class="form-label">
+             прізвище
+         </label>
+         <input type="text" class="form-control" id="f-sname"  name="sname" placeholder="Прізвище" required>
+         </div>
+       </div>
+       <div class="mb-3">
+         <label for="f-email" class="form-label">
+             Ваш email
+         </label>
+         <input type="email" class="form-control" id="f-email"  name="email" required>
+       </div>
+       <div class="mb-3">
+         <label for="f-link" class="form-label">
+             Посилання на сторінку, що може підтвердити вашу належність до закладу освіти. На вказаній  сторінці <b>має бути ваше прізвище та ім'я</b> (розклад занять, перелік співробітників закладу тощо…)
+         </label>
+         <input type="url" class="form-control" id="f-link"  name="link" placeholder="https://..." required>
+       </div>
+       <div class="mb-3">
+         <label for="f-url" class="form-label">
+             Знайдіть заклад на <a href="https://registry.edbo.gov.ua" target="blank" style="text-decoration: underline;">registry.edbo.gov.ua</a> чи
+             <a href="https://isuo.org" target="blank" style="text-decoration: underline;">https://isuo.org/</a>
+         </label>
+         <input type="url" class="form-control" id="f-url"
+           name="url"
+            placeholder="https://registry.edbo.gov.ua/university/ххххх/"
+            value='{{url}}'
+            pattern='.*((registry\.edbo\.gov\.ua)|(isuo\.org))\/[\/a-z]{1,}\d+.*'
+            oninvalid="this.setCustomValidity('Це обов\'язкове поле. Вкажіть ТОЧНЕ посилання на Ваш заклад registry.edbo.gov.ua чи isuo.org')"
+            oninput="this.setCustomValidity('')"
+            required>
+       </div>
+       <div class="row mt-2">
+       <div class="col-sm-12 text-center">
+       <button type="submit" class="btn btn-primary">Надіслати запит</button>
+       </div></div>
+    </form>
+</script>
+
+
+<script id="yes" type="x-tmpl-mustache">
+  <div class="row mt-2">
+  <h2>Є вільні ліцензії для розподілу</h2>
+  <p> Для отримання ліцензії Zoom зверніться до вашого адміністратора
+        {{#domain}}
+          <span class='mr-1'><a href="mailto:{{.}}">{{.}}</span>
+        {{/domain}}
+  </p>
+  </div>
+</script>
+
+<script id="no" type="x-tmpl-mustache">
+  <div class="row mt-2">
+  <p>На жаль, <strong>всі ліцензії розподілено</strong>. Але ви можете звернутись до вашого адміністратора
+        {{#domain}}
+          <span class='mr-1'><a href="mailto:{{.}}">{{.}}</span>
+        {{/domain}}
+  </p>
+  </div>
+</script>
+
+<script>
+    let data =<%= MultiJson.dump(@units) %>;
+    let select = $.map(data, function (obj) {
+        obj.text = obj.UA;
+        return obj;
+    });
+
+    function matchCustom(params, data) {
+        if ($.trim(params.term) === '') {
+            return data;
+        }
+
+        if (typeof data.text === undefined) {
+            return null;
+        }
+        let upper = params.term.toUpperCase();
+        if ((data.UA && data.UA.toUpperCase().indexOf(upper) > -1) ||
+          (data.EN && data.EN.toUpperCase().indexOf(upper) > -1)) {
+            let modifiedData = $.extend({}, data, true);
+            return modifiedData;
+        }
+
+        return null;
+    }
+
+    function render(template, data) {
+        let obj = document.getElementById(template).innerHTML;
+        return  Mustache.render(obj, data);
+    }
+
+    function process(value){
+        let variant = 'new';
+        if (unid) {
+            value.url = 'https://registry.edbo.gov.ua/university/'+unid;
+        }
+        if (value.status === 'yes' || value.status === 'no') {
+            variant = value.status;
+        }
+        return render(variant, value);
+    }
+
+    let unid = undefined;
+
+    function bindSubmit(element){
+        $(element).find('form').on("submit", function(event) {
+            event.preventDefault();
+            let form = $(event.target);
+            let value = form.serialize();
+            form.html("Збереження...");
+            jQuery.ajax({
+                type: "POST",
+                url: form.attr('action'),
+                data: value,
+                dataType: "html",
+                encode: true
+            }).done(function( msg ) {
+                $( form ).html( msg );
+            }).fail(function( jqXHR, textStatus ) {
+                $( form ).html( textStatus  );
+            });
+        });
+    }
+
+    $(document).ready(function () {
+        $('#select').select2({
+            data: select,
+            placeholder: 'Введіть або оберіть Ваш заклад освіти',
+            allowClear: true,
+            matcher: matchCustom,
+            tags: true,
+            language: { noResults: () => "Заклад не знайдено. При заповненні форми треба буде ввести додаткові данні."}
+        }).on('select2:select', function (e) {
+            let value = e.params.data;
+            let result = document.getElementById('result');
+            unid = undefined;
+            console.log(value);
+            if (value.id  === value.text) {
+                result.innerHTML  = render('new', value);
+                bindSubmit(result);
+            } else {
+                unid = value.id;
+                result.innerHTML = 'Хвилинку...';
+                $.ajax({
+                    type: "get",
+                    url: '/s/zoom-license/' + value.id,
+                    dataType: "json",
+                    encode: true
+                }).done(function (msg) {
+                    result.innerHTML = process(msg);
+                    bindSubmit(result);
+                }).fail(function (jqXHR, textStatus) {
+                    result.innerHTML = textStatus;
+                });
+            };
+
+        })});
+
+</script>

@@ -37,11 +37,15 @@ class MoocApi < Sinatra::Application
   %w{helpers models}.each {|dir| Dir.glob("./app/#{dir}/*.rb", &method(:require))}
 
   configure :production, :development do
-    [University, UdemyAdmin, Demand, Program,
-     Bailee, Zoom, Zoom2,
-     ZoomLicenseAvailable, ZoomLicenseRequest].each do |klass|
-      klass.database = settings.database["name"]
-      klass.table_gid = settings.database["tables"][klass.to_s.downcase]
+    {old: [University, UdemyAdmin, Demand, Program, Bailee, Zoom, Zoom2,  ZoomLicenseAvailable, ZoomLicenseRequest],
+     new: [TransferAdmin,TransferUser],
+    }.each do |file, classes|
+      classes.each do |klass|
+        klass.database = settings.database[file.to_s]["name"]
+        value = settings.database[file.to_s]["tables"][klass.to_s.downcase]
+        throw StandardError.new("Data for #{file}.#{klass.to_s.downcase} not specified") unless value
+        klass.table_gid = value
+      end
     end
   end
 

@@ -61,6 +61,23 @@ class MoocApi < Sinatra::Application
     erb(:zoom3, layout: :rector_layout)
   end
 
+  get '/s/transfer-result-mooc' do
+    @page_title = 'Перелік запитань адміністрації ЗВО'
+    @title = 'Перелік запитань адміністрації ЗВО'
+    @logo = 'logo.svg'
+    @units = University.cached_all()[:part]
+    erb(:transfer_admin, layout: :rector_layout)
+  end
+
+  get '/s/transfer-results' do
+    @page_title = 'Слухачі Coursera+Udemy'
+    @title = 'Слухачі Coursera+Udemy'
+    @logo = 'logo.svg'
+    @units = University.cached_all()[:part]
+    erb(:transfer_user, layout: :rector_layout)
+  end
+
+
   get '/s/zoom-license' do
     @page_title = 'Zoom, запит ліцензій'
     @title = 'Запит на отримання ліцензії Zoom'
@@ -76,7 +93,6 @@ class MoocApi < Sinatra::Application
     return json({status: '404'}) unless data
     json({domain: data[:domain], status: data[:used]<data[:total] ? 'yes' : 'no'})
   end
-
 
   get '/s/udemy/:id' do
     units = UdemyAdmin.cached_all[:full]
@@ -95,6 +111,8 @@ class MoocApi < Sinatra::Application
              when 'zoom' then Zoom.append!(params)
              when 'zoom2' then Zoom2.append!(params)
              when 'zoom-license' then ZoomLicenseRequest.append!(params)
+             when 'transfer-admin' then TransferAdmin.append!(params)
+             when 'transfer-user' then TransferUser.append!(params)
              else
                Demand.append!(params)
              end

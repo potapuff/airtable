@@ -29,6 +29,10 @@ class Array
       to_enum(:index_by) { size if respond_to?(:size) }
     end
   end
+
+  def sanitize
+    self.map{|x| x.to_s.sanitize}
+  end
 end
 
 class NilClass

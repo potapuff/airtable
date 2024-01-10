@@ -1,0 +1,215 @@
+<style>
+    .form-label.row {
+        display: block;
+    }
+    input::placeholder {
+        font-weight: bold;
+        color: red !important;
+    }
+    input[type=checkbox],input[type=radio]
+    {
+        -ms-transform: scale(1.75);
+        -moz-transform: scale(1.75);
+        -webkit-transform: scale(1.75);
+        -o-transform: scale(1.75);
+        transform: scale(1.75);
+        margin: 0.5rem;
+    }
+    .qnum{
+       font-size: 110%;
+       font-weight: 700;
+       display: inline;
+    }
+</style>
+
+<div class="edusearch">
+
+  <!--div class="edudescr">
+    <h1 class="edudescr_title"></h1>
+  </div-->
+
+  <div class="edufinder" style="margin-top: 8rem;">
+    <main>
+      <section class='container'>
+        <form action='/s/add' method="POST">
+          <input type="hidden" class="form-control" name="type" value="transfer-admin">
+          <div class="mb-4">
+            <label for="select" class="form-label row">
+              <span class='qnum'>1.</span>Оберіть ваш заклад освіти зі списку
+            </label>
+            <div class="row">
+            <select id="select" name="i01" width="100%" class="required" required>
+              <option value="-1" disabled>Оберіть ваш заклад освіти зі списку</option>
+              <% @units.each do |x| %>
+                <%= "<option value='#{x[:id]}'>#{x[:UA]}</option>" %>
+              <% end %>
+            </select>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label for="i02" class="form-label row">
+              <span class='qnum'>2.</span> Вкажіть ПІБ та посаду уповноваженої особи за заповнення даних цієї анкети
+            </label>
+            <input type="text" class="form-control" id="i02" name="i02" placeholder="Ваше ПІБ" required>
+          </div>
+          <div class="mb-4">
+            <label class="form-label row" data-lebel="i03">
+              <span class='qnum'>3.</span> Які документи неформального/інформального навчання визнаються у вашому закладі освіти:
+            </label>
+            <div class="row">
+              <div class="col">
+                <input type="checkbox" id="i031" name="i03[coursera]" data-group="i03"/><label for="i031">Сертифікати
+                Coursera</label><br/>
+                <input type="checkbox" id="i032" name="i03[udemi]" data-group="i03"/><label for="i032">Сертифікати
+                Udemy</label><br/>
+                <input type="checkbox" id="i033" name="i03[edx]" data-group="i03"/><label for="i033">Сертифікати
+                edX</label>
+              </div>
+              <div class="col">
+                <input type="checkbox" id="i034" name="i03[prometheus]" data-group="i03"/><label for="i034">Сертифікати
+                Prometheus</label><br/>
+                <input type="checkbox" id="i035" name="i03[mooc]" data-group="i03"/><label for="i035">сертифікати інших
+                MOOC</label><br/>
+                <input type="checkbox" id="i036" name="i03[інше]" data-group="i03"/><label for="i036">інші сертифікати,
+                свідоцтва, дипломи</label>
+              </div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label row" data-lebel="i04">
+              <span class='qnum'>4.</span> На якому рівні визнаються результати неформального/інформального навчання у вашому закладі освіти
+            </label>
+            <input type="checkbox" id="i041" name="i04[дисципліна]" data-group="i04"/><label for="i041">на рівні освітніх
+            компонентів (перезараховується дисципліна)</label><br/>
+            <input type="checkbox" id="i042" name="i04[тема]" data-group="i04"/><label for="i042">на рівні складових
+            освітніх компонентів (перезараховуються окремі теми/розділи дисципліни)</label>
+          </div>
+          <div class="mb-4">
+            <label class="form-label row" data-group="i05">
+              <span class='qnum'>5.</span> Які етапи передбачає фактична процедура визнання результатів?
+            </label>
+            <input type="checkbox" id="i051" name="i05[заява]" data-group="i05"/><label for="i051">Подання заяви чи
+            декларації з відповідними документами неформального/інформального навчання</label><br/>
+            <input type="checkbox" id="i052" name="i05[коміссіня]" data-group="i05"/><label for="i052">призначення
+            комісії з розгляду заяви студента</label><br/>
+            <input type="checkbox" id="i053" name="i05[викладач]" data-group="i05"/><label for="i053">особисте звернення до
+            викладача</label><br/>
+            <input type="checkbox" id="i054" name="i05[іспит]" data-group="i05"/><label for="i054">складання іспиту для
+            підтвердження результатів</label><br/>
+            <input type="checkbox" id="i055" name="i05[інші]" data-group="i05"/><label for="i055">інші додаткові
+            етапи</label>
+          </div>
+          <div class="mb-4">
+            <label class="form-label row">
+              <span class='qnum'>6.</span> Чи є в вашому закладі нормативний документ, що регламентує визнання неформального/інформального?
+              Наведіть URL за наявності
+            </label>
+            <p><span>ℹ️</span>&nbsp; <i>Ведіть "Ні"; "Так" і кометар; або адресу, що починається з http:// чи https://</i></p>
+            <input type="i06" class="form-control" id="i06"
+                   name="i06"
+                   placeholder="Aдреса, Ні або Так і коментар"
+                   pattern='^([нтНТ]|http).*'
+                   oninvalid="this.setCustomValidity('Це обов\'язкове поле. Вкажіть 	&#34;Ні	&#34;, 	&#34;Так&#34; і коментар або URL')"
+                   oninput="this.setCustomValidity('')"
+                   required>
+          </div>
+          <div class="mb-4">
+            <label class="form-label row" for='i07'>
+              <span class='qnum'>7.</span> З якого року ваш заклад почав визнавати результати неформального/інформального навчання?
+            </label>
+            <input type="number" min='1900' max='2024' name='i07' id='i07'  class="form-control w-50" />
+          </div>
+          <div class="mb-4">
+            <label class="form-label row">
+              <span class='qnum'>8.</span> Як вплинуло затвердження порядку визнання у вищій та фаховій передвищій освіті результатів навчання,
+              здобутих шляхом неформальної та/або інформальної освіти (16 березня 2022 року № 328/37664) на відповідні
+              процеси у вашому закладі?
+            </label>
+            <input type="radio" value="ніяк" id='i081' name='i08' selected/><label for="i081">ніяк не вплинуло</label><br/>
+            <input type="radio" value="зміни" id='i082' name='i08'/><label for="i082">змусило змінити нормативну
+            базу</label><br/>
+            <input type="radio" value="стимулювало" id='i083' name='i08'/><label for="i083">стимулювало до розроблення власного
+            порядку визнання</label>
+          </div>
+          <div class="mb-4">
+            <label class="form-label row" for="i09">
+              <span class='qnum'>9.</span> Оцініть обсяг у % результатів неформального/інформального навчання в освітніх програмах вашого закладу.
+              (0-100%)
+            </label>
+            <input type="number" min="0" max="100" id=i9 name="i09" class="form-control w-50"/>
+          </div>
+          <div class="mb-4">
+            <label class="form-label row">
+              <span class='qnum'>10.</span> Чи має ваш заклад уповноважених осіб (адміністраторів) на платформах:
+            </label>
+            <div class="row">
+              <div class="col"><input type="checkbox" id="i101" name="i10[coursera]"/><label for="i101"> Coursera</label>,</div>
+              <div class="col"><input type="checkbox" id="i102" name="i10[udemy]"/><label for="i102"> Udemy</label>,</div>
+              <div class="col"><input type="checkbox" id="i103" name="i10[edx]"/><label for="i103"> edX</label>,</div>
+              <div class="col"><input type="checkbox" id="i104" name="i10[labster]"/><label for="i104"> Labster</label> .</div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label row">
+              <span class='qnum'>11.</span> Чи знайомі ви з ресурсом https://mooc4ua.online?
+            </label>
+            <div class="row">
+              <div class="col"><input type='radio' id='i111' name="i11" value='так'><label for="i111">так</label></div>
+              <div class="col"><input type='radio' id='i112' name="i11" value='ні' ><label for="i112">вперше чую</label></div>
+              <div class="col"></div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label row">
+              <span class='qnum'>12.</span> Хто зазвичай є зацікавленою стороною у визнанні неформального/інформального навчання у вашому закладі?
+            </label>
+            <input type="checkbox" id="i121" name="i12[студент]"/><label for="i121"> студент - він сам шукає курси, які
+            потім можуть бути перезараховані</label><br/>
+            <input type="checkbox" id="i122" name="i12[викладач]"/><label for="i122"> викладач - він пропонує, рекомендує
+            курси, перезараховує результати</label><br/>
+            <input type="checkbox" id="i123" name="i12[адміністрація]"/><label for="i123"> адміністрація закладу - є системна
+            політика щодо рекомендованих платформ/курсів та процедури врахування результатів</label>
+          </div>
+          <div class="row mt-2">
+            <div class="col-sm-12 text-center">
+              <button type="submit" class="btn btn-primary">Надіслати відповідь</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+</div>
+
+  <script>
+
+      function bindSubmit(element) {
+          $(element).find('form').on("submit", function (event) {
+              event.preventDefault();
+              let form = $(event.target);
+              let value = form.serialize();
+              form.html("Збереження...");
+              jQuery.ajax({
+                  type: "POST",
+                  url: form.attr('action'),
+                  data: value,
+                  dataType: "html",
+                  encode: true
+              }).done(function (msg) {
+                  $(form).html(msg);
+              }).fail(function (jqXHR, textStatus) {
+                  $(form).html(textStatus);
+              });
+          });
+      }
+
+      $(document).ready(function () {
+          $('#select').select2({
+              allowClear: false,
+              language: {noResults: () => "Заклад не знайдено."}
+          });
+          bindSubmit(document);
+      });
+
+  </script>
