@@ -39,7 +39,7 @@
             </label>
             <div class="row">
             <select id="select" name="i01" width="100%" class="required" required>
-              <option value="-1" disabled>Оберіть ваш заклад освіти зі списку</option>
+              <option></option>
               <% @units.each do |x| %>
                 <%= "<option value='#{x[:id]}'>#{x[:UA]}</option>" %>
               <% end %>
@@ -50,7 +50,10 @@
             <label for="i02" class="form-label row">
               <span class='qnum'>2.</span> Вкажіть ПІБ та посаду уповноваженої особи за заповнення даних цієї анкети
             </label>
-            <input type="text" class="form-control" id="i02" name="i02" placeholder="Ваше ПІБ" required>
+            <div class="row">
+              <div class="col"><input type="text" class="form-control" name="i02"  placeholder="Ваше ПІБ" required></div>
+              <div class="col"><input type="text" class="form-control" name="i021" placeholder="Посада" required></div>
+            </div>
           </div>
           <div class="mb-4">
             <label class="form-label row" data-lebel="i03">
@@ -104,20 +107,15 @@
               <span class='qnum'>6.</span> Чи є в вашому закладі нормативний документ, що регламентує визнання неформального/інформального?
               Наведіть URL за наявності
             </label>
-            <p><span>ℹ️</span>&nbsp; <i>Ведіть "Ні"; "Так" і кометар; або адресу, що починається з http:// чи https://</i></p>
-            <input type="i06" class="form-control" id="i06"
-                   name="i06"
-                   placeholder="Aдреса, Ні або Так і коментар"
-                   pattern='^([нтНТ]|http).*'
-                   oninvalid="this.setCustomValidity('Це обов\'язкове поле. Вкажіть 	&#34;Ні	&#34;, 	&#34;Так&#34; і коментар або URL')"
-                   oninput="this.setCustomValidity('')"
-                   required>
+            <p><span>ℹ️</span>&nbsp; <i> Адреса має починатись http:// чи https://</i></p>
+            <input type="url" class="form-control" id="i06" name="i06"
+                   placeholder="https://...">
           </div>
           <div class="mb-4">
             <label class="form-label row" for='i07'>
               <span class='qnum'>7.</span> З якого року ваш заклад почав визнавати результати неформального/інформального навчання?
             </label>
-            <input type="number" min='1900' max='2024' name='i07' id='i07'  class="form-control w-50" />
+            <input type="number" min='2000' max='2024' name='i07' id='i07'  class="form-control w-50" />
           </div>
           <div class="mb-4">
             <label class="form-label row">
@@ -136,7 +134,7 @@
               <span class='qnum'>9.</span> Оцініть обсяг у % результатів неформального/інформального навчання в освітніх програмах вашого закладу.
               (0-100%)
             </label>
-            <input type="number" min="0" max="100" id=i9 name="i09" class="form-control w-50"/>
+            <input type="number" min="0" max="100" id=i09 name="i09" class="form-control" style="width: 8rem !important;"/>
           </div>
           <div class="mb-4">
             <label class="form-label row">
@@ -206,7 +204,8 @@
 
       $(document).ready(function () {
           $('#select').select2({
-              allowClear: false,
+              allowClear: true,
+              placeholder: "Виберіть заклад",
               language: {noResults: () => "Заклад не знайдено."}
           });
           bindSubmit(document);

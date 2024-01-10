@@ -61,26 +61,26 @@ class MoocApi < Sinatra::Application
     erb(:zoom3, layout: :rector_layout)
   end
 
-  get '/s/transfer-result-mooc' do
-    @page_title = 'Перелік запитань адміністрації ЗВО'
-    @title = 'Перелік запитань адміністрації ЗВО'
+  get '/s/transfer-results-mooc' do
+    @page_title = 'Опитування про неформальне/інформальне навчання'
+    @title = @page_title
     @logo = 'logo.svg'
-    @units = University.cached_all()[:part]
+    @units = UniversityNew.cached_all()[:part]
     erb(:transfer_admin, layout: :rector_layout)
   end
 
   get '/s/transfer-results' do
-    @page_title = 'Слухачі Coursera+Udemy'
-    @title = 'Слухачі Coursera+Udemy'
+    @page_title = 'Опитування про неформальне/інформальне навчання'
+    @title = @page_title
     @logo = 'logo.svg'
-    @units = University.cached_all()[:part]
+    @units = UniversityNew.cached_all()[:part]
     erb(:transfer_user, layout: :rector_layout)
   end
 
 
   get '/s/zoom-license' do
-    @page_title = 'Zoom, запит ліцензій'
-    @title = 'Запит на отримання ліцензії Zoom'
+    @page_title = 'Zoom, запит на отримання персональної ліцензії'
+    @title = 'Запит на отримання персональної ліцензії Zoom вчителя/викладача'
     @logo = 'zoom.png'
     ids = ZoomLicenseAvailable.cached_all()[:data].map{|x| x[:id]}
     @units = University.cached_all()[:part].select{|x| ids.include? x[:id]}
@@ -124,7 +124,7 @@ class MoocApi < Sinatra::Application
     [200, (University.last_updated || 'never').to_s]
   end
 
-  CACHED = [University, UdemyAdmin, ZoomLicenseAvailable]
+  CACHED = [University, UniversityNew, UdemyAdmin, ZoomLicenseAvailable]
 
   get '/s/reset' do
     CACHED.each do |klazz|
@@ -143,7 +143,7 @@ class MoocApi < Sinatra::Application
           rescue StandardError => error
             puts "#{klazz} update filed"
             Rollbar.error(error)
-            interval = [60, MoocApi.settings.cache_ttl.to_i / 3].min
+            interval = [180, MoocApi.settings.cache_ttl.to_i / 2].min
           end
           sleep interval
         end

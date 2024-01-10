@@ -38,7 +38,7 @@ class MoocApi < Sinatra::Application
 
   configure :production, :development do
     {old: [University, UdemyAdmin, Demand, Program, Bailee, Zoom, Zoom2,  ZoomLicenseAvailable, ZoomLicenseRequest],
-     new: [TransferAdmin,TransferUser],
+     new: [UniversityNew, TransferAdmin, TransferUser],
     }.each do |file, classes|
       classes.each do |klass|
         klass.database = settings.database[file.to_s]["name"]
@@ -67,6 +67,8 @@ class MoocApi < Sinatra::Application
   end
 
   not_found do
+    @logo_img = 'logo.svg'
+    @title = ''
     i18n_erb("404", layout: :main)
   end
 

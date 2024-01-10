@@ -1,155 +1,297 @@
 <style>
-input::placeholder {
-  font-weight: bold;
-  color: red !important;
-}
+    .form-label.row {
+        display: block;
+    }
+    input::placeholder {
+        font-weight: bold;
+        color: red !important;
+    }
+    input[type=checkbox],input[type=radio]
+    {
+        -ms-transform: scale(1.75);
+        -moz-transform: scale(1.75);
+        -webkit-transform: scale(1.75);
+        -o-transform: scale(1.75);
+        transform: scale(1.75);
+        margin: 0.5rem;
+    }
+    .qnum{
+        font-size: 110%;
+        font-weight: 700;
+        display: inline;
+    }
+    .hidden {
+        visibility: hidden;
+    }
 </style>
 
 <div class="edusearch">
-  <div class="edudescr">
-    <h1 class="edudescr_title">
-      &nbsp;
-    </h1>
-  </div>
 
-  <div class="edufinder">
+  <!--div class="edudescr">
+    <h1 class="edudescr_title"></h1>
+  </div-->
+
+  <div class="edufinder" style="margin-top: 8rem;">
     <main>
       <section class='container'>
-        <div class="row" style="--bs-gutter-x: 0;">
-          <select id="select" width="100%">
-            <option value=""></option>
-          </select>
-        </div>
-        <div id="result" class="pt-3">
-          <span>Не знайшли свій заклад? Введіть його назву та натисніть enter</span>
-        </div>
-      </section>
+        <form action='/s/add' method="POST">
+          <input type="hidden" class="form-control" name="type" value="transfer-user">
+          <div class="mb-4">
+            <label for="select" class="form-label row">
+              <span class='qnum'>1.</span>Оберіть ваш заклад освіти зі списку
+            </label>
+            <div class="row">
+              <select id="select" name="i01" width="100%" class="required" required>
+                <option></option>
+                <% @units.each do |x| %>
+                  <%= "<option value='#{x[:id]}'>#{x[:UA]}</option>" %>
+                <% end %>
+              </select>
+            </div>
+          </div>
+<!--   -->
+          <div class="mb-4">
+            <label for="select" class="form-label row">
+              <span class='qnum'>2.</span>Яка ваша роль:
+            </label>
+            <div class="row">
+              <div class="col"><input type='radio' id='i021' name="i02" value='студент' onchange="show('student')" autocomplete="off"><label for="i111">студент</label></div>
+              <div class="col"><input type='radio' id='i022' name="i02" value='викладач' onchange="show('tutor')" autocomplete="off"><label for="i112">викладач</label></div>
+              <div class="col"><input type='radio' id='i023' name="i02" value='співробіник' onchange="show('staff')" autocomplete="off"><label for="i113">співробіник</label></div>
+            </div>
+          </div>
 
+          <div id="personal-fields"></div>
+
+          <div class="row mt-2 hidden" id='submit'>
+            <div class="col-sm-12 text-center">
+              <button type="submit" class="btn btn-primary">Надіслати відповідь</button>
+            </div>
+          </div>
+        </form>
+      </section>
     </main>
   </div>
-
 </div>
 
-<script id="new" type="x-tmpl-mustache">
-    <p>
-      Для отримання ліцензії заповніть форму.
-    </p>
-    <form action='/s/add' method="POST" >
-       <input type="hidden" class="form-control" name="type" value="zoom-license">
-       <div class="row">
-         <div class='col'>
-         <label for="f-fname" class="form-label">
-             Ваше ім’я
-         </label>
-         <input type="text" class="form-control" id="f-fname"  name="fname" placeholder="Ім'я" required>
-         </div>
-         <div class='col'>
-         <label for="f-sname" class="form-label">
-             прізвище
-         </label>
-         <input type="text" class="form-control" id="f-sname"  name="sname" placeholder="Прізвище" required>
-         </div>
-       </div>
-       <div class="mb-3">
-         <label for="f-email" class="form-label">
-             Ваш email
-         </label>
-         <input type="email" class="form-control" id="f-email"  name="email" required>
-       </div>
-       <div class="mb-3">
-         <label for="f-link" class="form-label">
-             Посилання на сторінку, що може підтвердити вашу належність до закладу освіти. На вказаній  сторінці <b>має бути ваше прізвище та ім'я</b> (розклад занять, перелік співробітників закладу тощо…)
-         </label>
-         <input type="url" class="form-control" id="f-link"  name="link" placeholder="https://..." required>
-       </div>
-       <div class="mb-3">
-         <label for="f-url" class="form-label">
-             Знайдіть заклад на <a href="https://registry.edbo.gov.ua" target="blank" style="text-decoration: underline;">registry.edbo.gov.ua</a> чи
-             <a href="https://isuo.org" target="blank" style="text-decoration: underline;">https://isuo.org/</a>
-         </label>
-         <input type="url" class="form-control" id="f-url"
-           name="url"
-            placeholder="https://registry.edbo.gov.ua/university/ххххх/"
-            value='{{url}}'
-            pattern='.*((registry\.edbo\.gov\.ua)|(isuo\.org))\/[\/a-z]{1,}\d+.*'
-            oninvalid="this.setCustomValidity('Це обов\'язкове поле. Вкажіть ТОЧНЕ посилання на Ваш заклад registry.edbo.gov.ua чи isuo.org')"
-            oninput="this.setCustomValidity('')"
-            required>
-       </div>
-       <div class="row mt-2">
-       <div class="col-sm-12 text-center">
-       <button type="submit" class="btn btn-primary">Надіслати запит</button>
-       </div></div>
-    </form>
+<script id="student" type="template">
+    <div class="mb-4">
+        <label for="select" class="form-label row">
+            <span class='qnum'>3.</span> Як ви долучилися до курсів на платформі? Звідки дізналися про можливість?
+        </label>
+        <div class="row">
+            <div class="col">
+                <input type="checkbox" id="s031" name="s03[шкукав_сам]" /> <label for="s031">наполегливо шукав можливість</label><br/>
+                <input type="checkbox" id="s032" name="s03[новини]" />     <label for="s032">дізнався з новин</label><br/>
+                <input type="checkbox" id="s033" name="s03[mooc4ua]" />    <label for="s033">з ресурсу https://mooc4ua.online</label>
+            </div>
+            <div class="col">
+                <input type="checkbox" id="s034" name="s03[заклад]" />    <label for="s034">інформація від мого закладу освіти</label><br/>
+                <input type="checkbox" id="s035" name="s03[викладач]" />  <label for="s035">рекомендація викладача</label><br/>
+                <input type="checkbox" id="s036" name="s03[студенти]" />  <label for="s036">рекомендація інших студентів</label>
+            </div>
+        </div>
+    </div>
+    <div class="mb-4">
+        <label for="select" class="form-label row">
+            <span class='qnum'>4.</span> Які документи неформального/інформального навчання визнаються у вашому закладі освіти:
+        </label>
+        <div class="row">
+            <div class="col">
+                <input type="checkbox" id="s041" name="s04[coursera]" data-group="s04"/><label for="s041">Сертифікати
+                Coursera</label><br/>
+                <input type="checkbox" id="s042" name="s04[udemi]" data-group="s04"/><label for="s042">Сертифікати
+                Udemy</label><br/>
+                <input type="checkbox" id="s043" name="s04[edx]" data-group="s04"/><label for="s043">Сертифікати
+                edX</label>
+            </div>
+            <div class="col">
+                <input type="checkbox" id="s044" name="s04[prometheus]" data-group="s04"/><label for="s044">Сертифікати
+                Prometheus</label><br/>
+                <input type="checkbox" id="s045" name="s04[mooc]" data-group="s04"/><label for="s045">сертифікати інших
+                MOOC</label><br/>
+                <input type="checkbox" id="s046" name="s04[інше]" data-group="s04"/><label for="s046">інші сертифікати,
+                свідоцтва, дипломи</label>
+            </div>
+        </div>
+    </div>
+    <div class="mb-4">
+        <label for="select" class="form-label row">
+            <span class='qnum'>5. На якому рівні визнаються результати неформального/інформального навчання у вашому закладі освіти</span>
+        </label>
+        <input type="checkbox" id="s051" name="s05[дисципліна]" data-group="s05"/><label for="s051">на рівні освітніх
+        компонентів (перезараховується дисципліна)</label><br/>
+        <input type="checkbox" id="s052" name="s05[тема]" data-group="s05"/><label for="s052">на рівні складових
+        освітніх компонентів (перезараховуються окремі теми/розділи дисципліни)</label>
+    </div>
+    <div class="mb-4">
+        <label for="select" class="form-label row">
+            <span class='qnum'>6.</span> Які етапи перередбачає фактична процедура визнання результатів?
+        </label>
+
+        <input type="checkbox" id="s061" name="s06[заява]" data-group="s06"/><label for="s061">подання заяви чи
+        декларації з відповідними документами неформального/інформального навчання</label><br/>
+        <input type="checkbox" id="s062" name="s06[комісія]" data-group="s06"/><label for="s062">призначення
+        комісії з розгляду заяви студента</label><br/>
+        <input type="checkbox" id="s063" name="s06[викладач]" data-group="s06"/><label for="s063">особисте звернення до
+        викладача</label><br/>
+        <input type="checkbox" id="s064" name="s06[іспит]" data-group="s06"/><label for="s064">складання іспиту для
+        підтвердження результатів</label><br/>
+        <input type="checkbox" id="s065" name="s06[інші]" data-group="s06"/><label for="s065">інші додаткові
+        етапи</label>
+    </div>
+    <div class="mb-4">
+        <label for="select" class="form-label row">
+            <span class='qnum'>7.</span> Скільки ваших особистих результатів неформального/інформального навчання вже визнано  вашим закладом?
+        </label>
+        <input type="number" min='0' max='20' name='s07' id='s07'  class="form-control" style="width:8rem !important;"/>
+    </div>
+    <div class="mb-4">
+        <label for="select" class="form-label row">
+            <span class='qnum'>8.</span> Чи готові ви поділитися власним досвідом проходження курсів з іншими?
+        </label>
+        <input type="checkbox" id="s081" name="s08[інтерв_ю]" data-group="s08"/><label for="s081">готовий до інтерв’ю</label>
+        <input type="checkbox" id="s082" name="s08[онлайн]" data-group="s08"/><label for="s082">готовий взяти участь в онлайн-заході</label>
+        <input type="checkbox" id="s083" name="s08[описати]" data-group="s08"/><label for="s083">можу описати власний досвід</label>
+        <div class="mt-2">
+            <label for='і06_'>Ваш email для контакту:</label>
+            <input type="email" id="s08_" name="s08_"  class="form-control w-50 d-inline"/>
+        </div>
+    </div>
 </script>
 
-
-<script id="yes" type="x-tmpl-mustache">
-  <div class="row mt-2">
-  <h2>Є вільні ліцензії для розподілу</h2>
-  <p> Для отримання ліцензії Zoom зверніться до вашого адміністратора
-        {{#domain}}
-          <span class='mr-1'><a href="mailto:{{.}}">{{.}}</span>
-        {{/domain}}
-  </p>
-  </div>
+<script id="tutor" type="template">
+    <div class="mb-4">
+        <label for="select" class="form-label row">
+            <span class='qnum'>3.</span> Як ви долучилися до курсів на платформі? Звідки дізналися про можливість?
+        </label>
+        <div class="row">
+            <div class="col">
+                <input type="checkbox" id="t031" name="t03[шкукав_сам]" /> <label for="t031">наполегливо шукав можливість</label><br/>
+                <input type="checkbox" id="t032" name="t03[новини]" />     <label for="t032">дізнався з новин</label><br/>
+                <input type="checkbox" id="t033" name="t03[mooc4ua]" />    <label for="t033">з ресурсу https://mooc4ua.online</label>
+            </div>
+            <div class="col">
+                <input type="checkbox" id="t034" name="t03[заклад]" />     <label for="t034">інформація від мого закладу освіти</label><br/>
+                <input type="checkbox" id="t035" name="t03[викладач]" />   <label for="t035">рекомендація викладача</label><br/>
+                <input type="checkbox" id="t036" name="t03[студенти]" />   <label for="t036">рекомендація інших студентів</label>
+            </div>
+        </div>
+    </div>
+    <div class="mb-4">
+        <label for="select" class="form-label row">
+            <span class='qnum'>4.</span> Які документи неформального/інформального навчання визнаються у вашому закладі освіти:
+        </label>
+        <div class="row">
+            <div class="col">
+                <input type="checkbox" id="t041" name="t04[coursera]" data-group="t04"/><label for="t041">Сертифікати
+                Coursera</label><br/>
+                <input type="checkbox" id="t042" name="t04[udemi]" data-group="t04"/><label for="t042">Сертифікати
+                Udemy</label><br/>
+                <input type="checkbox" id="t043" name="t04[edx]" data-group="t04"/><label for="t043">Сертифікати
+                edX</label>
+            </div>
+            <div class="col">
+                <input type="checkbox" id="t044" name="t04[prometheus]" data-group="t04"/><label for="t044">Сертифікати
+                Prometheus</label><br/>
+                <input type="checkbox" id="t045" name="t04[mooc]" data-group="t04"/><label for="t045">сертифікати інших
+                MOOC</label><br/>
+                <input type="checkbox" id="t046" name="t04[інше]" data-group="t04"/><label for="t046">інші сертифікати,
+                свідоцтва, дипломи</label>
+            </div>
+        </div>
+    </div>
+    <div class="mb-4">
+        <label for="select" class="form-label row">
+            <span class='qnum'>5. На якому рівні визнаються результати неформального/інформального навчання у вашому закладі освіти</span>
+        </label>
+        <input type="checkbox" id="t051" name="t05[дисципліна]" data-group="t05"/><label for="t051">на рівні освітніх
+        компонентів (перезараховується дисципліна)</label><br/>
+        <input type="checkbox" id="t052" name="t05[тема]" data-group="t05"/><label for="t052">на рівні складових
+        освітніх компонентів (перезараховуються окремі теми/розділи дисципліни)</label>
+    </div>
+    <div class="mb-4">
+        <label for="select" class="form-label row">
+            <span class='qnum'>6.</span> Які етапи перередбачає фактична процедура визнання результатів?
+        </label>
+        <input type="checkbox" id="t061" name="t06[заява]" data-group="t06"/><label for="t061">подання заяви чи
+        декларації з відповідними документами неформального/інформального навчання</label><br/>
+        <input type="checkbox" id="t062" name="t06[комісія]" data-group="t06"/><label for="t062">призначення
+        комісії з розгляду заяви студента</label><br/>
+        <input type="checkbox" id="t063" name="t06[викладач]" data-group="t06"/><label for="t063">особисте звернення до
+        викладача</label><br/>
+        <input type="checkbox" id="t064" name="t06[іспит]" data-group="t06"/><label for="t064">складання іспиту для
+        підтвердження результатів</label><br/>
+        <input type="checkbox" id="t065" name="t06[інші]" data-group="t06"/><label for="t065">інші додаткові
+        етапи</label>
+    </div>
+    <div class="mb-4">
+        <label class="form-label row">
+            <span class='qnum'>7.</span> Чи є в вашому закладі нормативний документ, що регламентує визнання неформального/інформального?
+            Наведіть URL за наявності
+        </label>
+        <p><span>ℹ️</span>&nbsp; <i> Адреса має починатись http:// чи https://</i></p>
+        <input type="url" class="form-control" id="t07" name="t07"
+               placeholder="https://...">
+    </div>
+    <div class="mb-4">
+        <label class="form-label row" for='i07'>
+            <span class='qnum'>8.</span> З якого року ваш заклад почав визнавати результати неформального/інформального навчання?
+        </label>
+        <input type="number" min='2000' max='2024' name='t08' id='t08'  class="form-control" style="width: 8rem !important;" />
+    </div>
+    <div class="mb-4">
+        <label class="form-label row" for="i09">
+            <span class='qnum'>9.</span> Оцініть обсяг у % результатів неформального/інформального навчання, що визнаються серед ваших студентів.
+            (0-100%)
+        </label>
+        <input type="number" min="0" max="100" id=t09 name="t09" class="form-control" style="width: 8rem !important;"/>
+    </div>
+    <div class="mb-4">
+        <label class="form-label row">
+            <span class='qnum'>10.</span> Хто зазвичай є зацікавленою стороною у визнанні неформального/інформального навчання у вашому закладі?
+        </label>
+        <input type='radio' id='t101' name="t10" value='так'><label for="t101">частіше я сам рекомендую студентам</label><br/>
+            <input type='radio' id='t102' name="t10" value='так'><label for="t102">частіше звертаються самі студенти</label><br/>
+    </div>
+    <div class="mb-4">
+        <label for="select" class="form-label row">
+            <span class='qnum'>11.</span> Чи готові ви поділитися власним досвідом проходження курсів з іншими?
+        </label>
+        <input type="checkbox" id="t111" name="t11[інтерв_ю]" data-group="t11"/><label for="t111">готовий(а) до інтерв’ю</label><br/>
+        <input type="checkbox" id="t112" name="t11[ондайн]" data-group="t11"/><label for="t112">готовий(а) взяти участь в онлайн-заході</label><br/>
+        <input type="checkbox" id="t113" name="t11[досвід]" data-group="t11"/><label for="t113">можу описати власний досвід, поділитися курсами, що з мого досвіду найкраще підходять для вивчення моїх дисциплін</label><br/>
+        <input type="checkbox" id="t114" name="t11[робоча_группа]" data-group="t11"/><label for="t114">можу долучитися до робочих груп з обговорення кращих практик застосування онлайн-курсів</label>
+        <div class="mt-2">
+            <label for='t11_'>Ваш email для контакту</label>
+            <input type="email" id="t11_" name="t11_" class="form-control w-50 d-inline"/>
+        </div>
+    </div>
 </script>
 
-<script id="no" type="x-tmpl-mustache">
-  <div class="row mt-2">
-  <p>На жаль, <strong>всі ліцензії розподілено</strong>. Але ви можете звернутись до вашого адміністратора
-        {{#domain}}
-          <span class='mr-1'><a href="mailto:{{.}}">{{.}}</span>
-        {{/domain}}
-  </p>
-  </div>
+<script id="staff" type="template">
+    <div class="mb-4">
+        <label for="select" class="form-label row">
+            <span class='qnum'>3.</span>Як ви долучилися до курсів на платформі? Звідки дізналися про можливість?
+        </label>
+        <input type="checkbox" id="p031" name="p03[шкукав_сам]" /> <label for="p031">наполегливо шукав можливість</label><br/>
+        <input type="checkbox" id="p032" name="p03[новини]" />     <label for="p032">дізнався з новин</label><br/>
+        <input type="checkbox" id="p033" name="p03[mooc4ua]" />    <label for="p033">з ресурсу https://mooc4ua.online</label><br/>
+        <input type="checkbox" id="p034" name="p03[заклад]" />     <label for="p034">інформація від мого закладу освіти</label><br/>
+        <input type="checkbox" id="p035" name="p03[колеги]" />     <label for="p035">рекомендація колег</label><br/>
+    </div>
 </script>
+
 
 <script>
-    let data =<%= MultiJson.dump(@units) %>;
-    let select = $.map(data, function (obj) {
-        obj.text = obj.UA;
-        return obj;
-    });
 
-    function matchCustom(params, data) {
-        if ($.trim(params.term) === '') {
-            return data;
-        }
-
-        if (typeof data.text === undefined) {
-            return null;
-        }
-        let upper = params.term.toUpperCase();
-        if ((data.UA && data.UA.toUpperCase().indexOf(upper) > -1) ||
-          (data.EN && data.EN.toUpperCase().indexOf(upper) > -1)) {
-            let modifiedData = $.extend({}, data, true);
-            return modifiedData;
-        }
-
-        return null;
+    function show(section){
+        $('#personal-fields').html( $("#"+section).html());
+        $('#submit').removeClass('hidden');
     }
 
-    function render(template, data) {
-        let obj = document.getElementById(template).innerHTML;
-        return  Mustache.render(obj, data);
-    }
-
-    function process(value){
-        let variant = 'new';
-        if (unid) {
-            value.url = 'https://registry.edbo.gov.ua/university/'+unid;
-        }
-        if (value.status === 'yes' || value.status === 'no') {
-            variant = value.status;
-        }
-        return render(variant, value);
-    }
-
-    let unid = undefined;
-
-    function bindSubmit(element){
-        $(element).find('form').on("submit", function(event) {
+    function bindSubmit(element) {
+        $(element).find('form').on("submit", function (event) {
             event.preventDefault();
             let form = $(event.target);
             let value = form.serialize();
@@ -160,46 +302,21 @@ input::placeholder {
                 data: value,
                 dataType: "html",
                 encode: true
-            }).done(function( msg ) {
-                $( form ).html( msg );
-            }).fail(function( jqXHR, textStatus ) {
-                $( form ).html( textStatus  );
+            }).done(function (msg) {
+                $(form).html(msg);
+            }).fail(function (jqXHR, textStatus) {
+                $(form).html(textStatus);
             });
         });
     }
 
     $(document).ready(function () {
         $('#select').select2({
-            data: select,
-            placeholder: 'Введіть або оберіть Ваш заклад освіти',
             allowClear: true,
-            matcher: matchCustom,
-            tags: true,
-            language: { noResults: () => "Заклад не знайдено. При заповненні форми треба буде ввести додаткові данні."}
-        }).on('select2:select', function (e) {
-            let value = e.params.data;
-            let result = document.getElementById('result');
-            unid = undefined;
-            console.log(value);
-            if (value.id  === value.text) {
-                result.innerHTML  = render('new', value);
-                bindSubmit(result);
-            } else {
-                unid = value.id;
-                result.innerHTML = 'Хвилинку...';
-                $.ajax({
-                    type: "get",
-                    url: '/s/zoom-license/' + value.id,
-                    dataType: "json",
-                    encode: true
-                }).done(function (msg) {
-                    result.innerHTML = process(msg);
-                    bindSubmit(result);
-                }).fail(function (jqXHR, textStatus) {
-                    result.innerHTML = textStatus;
-                });
-            };
-
-        })});
+            placeholder: "Виберіть заклад",
+            language: {noResults: () => "Заклад не знайдено."}
+        });
+        bindSubmit(document);
+    });
 
 </script>
