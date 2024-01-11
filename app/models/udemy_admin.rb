@@ -19,27 +19,7 @@ class UdemyAdmin
     {full: data_full.index_by{|x| x[:id]}}
   end
 
-  def self.cached_all(force = false)
-    return all unless MoocApi.settings.cache_ttl.to_i > 0
-    
-    stamp = Time.now
-    if @@holder.nil? || force
-      @@holder = {
-        stamp: stamp,
-        data: all
-      }
-    end
-    @@holder[:data]
-  end
-
-  def self.last_updated
-    @@holder && @@holder[:stamp]
-  end
-
-  def self.reset_cache
-    @@holder = nil
-  end
-
+  extend CachedModel
 
   private
 
