@@ -4,12 +4,14 @@ require 'sinatra/respond_with'
 require 'sinatra/config_file'
 require 'sinatra/required_params'
 require 'rollbar/middleware/sinatra'
+require './lib/resque'
+require './lib/dalli'
+require './lib/models'
 
 class MoocApi < Sinatra::Application
 
   use Rollbar::Middleware::Sinatra
 
-  puts Sinatra::Application.settings.environment
   config_file File.join(File.dirname(__FILE__),
                         'config',
                         "#{Sinatra::Application.settings.environment}.yml")
@@ -31,21 +33,6 @@ class MoocApi < Sinatra::Application
       config.exception_level_filters.merge!({
        'Sinatra::NotFound' => 'ignore',
       })
-    end
-  end
-
-  %w{helpers models}.each {|dir| Dir.glob("./app/#{dir}/*.rb", &method(:require))}
-
-  configure :production, :development do
-    {old: [University, UdemyAdmin, Demand, Program, Bailee, Zoom, Zoom2,  ZoomLicenseAvailable, ZoomLicenseRequest],
-     new: [UniversityNew, TransferAdmin, TransferUser],
-    }.each do |file, classes|
-      classes.each do |klass|
-        klass.database = settings.database[file.to_s]["name"]
-        value = settings.database[file.to_s]["tables"][klass.to_s.downcase]
-        throw StandardError.new("Data for #{file}.#{klass.to_s.downcase} not specified") unless value
-        klass.table_gid = value
-      end
     end
   end
 

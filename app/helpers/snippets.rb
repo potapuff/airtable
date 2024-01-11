@@ -27,7 +27,7 @@ module Sinatra
       }
     };
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/rollbar.js/2.25.0/rollbar.min.js" integrity="sha512-//M10QI7wc00lic9Oxbfn2KSzlmaa8l7UzzTqR2GtWVwxHIGpKnGwAcgtcAqQGBR2uWoSXD2hmPfuumITQMYlg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.rollbar.com/rollbarjs/refs/tags/v2.26.2/rollbar.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     TEXT
   end
 

@@ -104,7 +104,6 @@ class MoocApi < Sinatra::Application
   end
 
   post '/s/add' do
-    puts params.inspect
     result = case (params.delete(:type))
              when 'program' then Program.append!(params)
              when 'bailee' then Bailee.append!(params)
@@ -116,12 +115,11 @@ class MoocApi < Sinatra::Application
              else
                Demand.append!(params)
              end
-    puts result
     i18n_erb(:greetings, layout: request.xhr? ? nil : :main)
   end
 
   get '/s/ping' do
-    [200, (University.last_updated || 'never').to_s]
+    [200, Time.now ]
   end
 
   CACHED = [University, UniversityNew, UdemyAdmin, ZoomLicenseAvailable]
@@ -131,27 +129,6 @@ class MoocApi < Sinatra::Application
       klazz.reset_cache
     end
     redirect '/'
-  end
-
-  if MoocApi.settings.cache_ttl.to_i > 0
-    CACHED.each do |klazz|
-      Thread.new do
-        while true do
-          interval = MoocApi.settings.cache_ttl.to_i
-          begin
-            klazz.cached_all(true)
-          rescue StandardError => error
-            puts "#{klazz} update filed"
-            Rollbar.error(error)
-            interval = [180, MoocApi.settings.cache_ttl.to_i / 2].min
-          end
-          sleep interval
-        end
-      end
-      sleep 3
-    end
-  else
-    puts 'Cache disabled. Set cache_ttl (in seconds) to enable.'
   end
 
 end
